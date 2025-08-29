@@ -10,12 +10,23 @@ using TMPro;
 
 public class LobbyManager : MonoBehaviour
 {
+    public static LobbyManager Instance;
+
+    [Header("Lobby Vars")]
+    [SerializeField] private Lobby? currentLobby = null;
     [SerializeField] private Lobby hostedLobby;
     [SerializeField] public List<Lobby> activeLobbies;
 
     [Header("Refs")]
     public Transform UILobbyListContentParent;
     public GameObject UILobbyListingPrefab;
+
+
+    private void Awake()
+    {
+        // Update singleton
+        if (Instance == null) Instance = this;
+    }
 
     private void Start()
     {
@@ -42,6 +53,9 @@ public class LobbyManager : MonoBehaviour
                 // Invalid lobby
                 throw new System.Exception("Steam failed to create lobby");
             }
+
+            // Update the current lobby
+            currentLobby = hostedLobby;
 
             return true;
         }
@@ -130,14 +144,46 @@ public class LobbyManager : MonoBehaviour
                 
                 if (ownerAvatar.HasValue)
                 {
+                    Log($"Gathered {activeLobbies[i].Owner.Name}'s avatar image.");
                     Texture2D avatar = ownerAvatar?.Covert();
                     
                     listing.GetComponentInChildren<RawImage>().texture = avatar;
                 }
+
+
+                // Set the join button on click to call the JoinPressed function using a handy lambda
+                Log("Creating onclick event. i: " + i);
+                
+                listing.GetComponentInChildren<Button>().onClick.AddListener(() => JoinLobbyPressed(i));
             }
         }
     }
 
+
+    public async void JoinLobby(Lobby lobby)
+    {
+        RoomEnter joinResult = await lobby.Join();
+
+        if (joinResult == RoomEnter.Success)
+        {
+            Log($"Joined lobby success id: {lobby.Id}");
+
+            currentLobby = lobby;
+
+            //return true;
+        }
+        else
+        {
+            Log($"Failed to join lobby id: {lobby.Id}. Result: {joinResult}.");
+            //return false;
+        }
+    }
+
+    public void JoinLobbyPressed(int lobbyIndex)
+    {
+        Log("Read join click event. Lobby index: " + lobbyIndex);
+        JoinLobby(activeLobbies[lobbyIndex]);
+    }
 
     /// <summary>
     /// Debug.Log Wrapper (I feel like Ima be using htis a lot)

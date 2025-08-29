@@ -966,4 +966,5 @@ ScriptsOnlyBuild:
   platform: 2
   scenePathNames:
   - Assets/Scenes/Main.unity
-  playerPath: /Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Builds/https-::wiki.facepunch.com:steamworks:GetClientAvatarUnity.app
+  playerPath: /Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Builds/P2P
+    Client Build.app
