@@ -2,6 +2,7 @@ ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
     - Console
+    - LobbyManager
     - SteamManager
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
@@ -30,6 +31,7 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
     - UnityEngine.UI.Mask
+    - UnityEngine.UI.RawImage
     - UnityEngine.UI.ScrollRect
     - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.VerticalLayoutGroup
@@ -72,8 +74,14 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.SpriteState
   methodsToPreserve:
   - assembly: Assembly-CSharp
-    fullTypeName: SteamManager
+    fullTypeName: LobbyManager
+    methodName: RefreshLobbiesPressedAsync
+  - assembly: Assembly-CSharp
+    fullTypeName: LobbyManager
     methodName: CreateLobbyPressedAsync
+  - assembly: UnityEngine.CoreModule
+    fullTypeName: UnityEngine.GameObject
+    methodName: SetActive
   sceneClasses:
     Assets/Scenes/Main.unity:
     - Class: 1
@@ -107,9 +115,11 @@ ScriptsOnlyBuild:
     - Class: 108
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 1606}
+      Script: {instanceID: 1562}
     - Class: 114
       Script: {instanceID: 2220}
+    - Class: 114
+      Script: {instanceID: 2346}
     - Class: 114
       Script: {instanceID: 2656}
     - Class: 114
@@ -141,7 +151,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 6832}
     - Class: 114
-      Script: {instanceID: 7512}
+      Script: {instanceID: 6880}
+    - Class: 114
+      Script: {instanceID: 7514}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -161,16 +173,16 @@ ScriptsOnlyBuild:
   scriptHashData:
   - hash:
       serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: UnityEngine.UI.dll
-    namespaceName: UnityEngine.UIElements
-    className: PanelRaycaster
-  - hash:
-      serializedVersion: 2
       Hash: a6e561615949734e9f12f9b61661f43e
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Image
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: UnityEngine.UI.dll
+    namespaceName: UnityEngine.UIElements
+    className: PanelRaycaster
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -791,6 +803,12 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
+      Hash: bc7565da647b9bc6a8216945e01a564a
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: LobbyManager
+  - hash:
+      serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
@@ -948,5 +966,4 @@ ScriptsOnlyBuild:
   platform: 2
   scenePathNames:
   - Assets/Scenes/Main.unity
-  playerPath: /Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Builds/P2P
-    Client Build.app
+  playerPath: /Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Builds/https-::wiki.facepunch.com:steamworks:GetClientAvatarUnity.app
