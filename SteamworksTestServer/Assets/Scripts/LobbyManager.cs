@@ -115,7 +115,7 @@ public class LobbyManager : MonoBehaviour
                 Transform listing = UILobbyListContentParent.GetChild(i);
 
                 TMP_Text[] textComponents = listing.GetComponentsInChildren<TMP_Text>();
-                if (textComponents.Length != 3)
+                if (textComponents.Length != 4)
                 {
                     Log("Someone fucked with the lobby listings. Incorrect amt of text comps.");
                     continue;
@@ -123,6 +123,7 @@ public class LobbyManager : MonoBehaviour
 
                 textComponents[0].text = "Own: " + activeLobbies[i].Owner.Name;
                 textComponents[1].text = "Id: " + activeLobbies[i].Id.ToString();
+                textComponents[2].text = $"{activeLobbies[i].MemberCount}/{activeLobbies[i].MaxMembers}";
 
                 // This is where you would put the PFP of the player update
                 var ownerAvatar = await activeLobbies[i].Owner.GetSmallAvatarAsync();
