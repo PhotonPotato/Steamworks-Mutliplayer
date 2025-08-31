@@ -354,6 +354,7 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
 "Assets/Scripts/Console.cs"
 "Assets/Scripts/LobbyManager.cs"
+"Assets/Scripts/MessageFormats/MessageTypes.cs"
 "Assets/Scripts/SteamImageExtensions.cs"
 "Assets/Scripts/SteamManager.cs"
 "Assets/Scripts/SteamServerConnectionManager.cs"

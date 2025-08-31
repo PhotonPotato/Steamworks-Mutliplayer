@@ -8,6 +8,7 @@ ScriptsOnlyBuild:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
     - TMPro.TMP_FontAsset
+    - TMPro.TMP_InputField
     - TMPro.TMP_Settings
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
@@ -30,8 +31,10 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.ContentSizeFitter
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.LayoutElement
     - UnityEngine.UI.Mask
     - UnityEngine.UI.RawImage
+    - UnityEngine.UI.RectMask2D
     - UnityEngine.UI.ScrollRect
     - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.VerticalLayoutGroup
@@ -48,6 +51,11 @@ ScriptsOnlyBuild:
     - TMPro.TMP_GlyphAdjustmentRecord
     - TMPro.TMP_GlyphPairAdjustmentRecord
     - TMPro.TMP_GlyphValueRecord
+    - TMPro.TMP_InputField/OnChangeEvent
+    - TMPro.TMP_InputField/SelectionEvent
+    - TMPro.TMP_InputField/SubmitEvent
+    - TMPro.TMP_InputField/TextSelectionEvent
+    - TMPro.TMP_InputField/TouchScreenKeyboardEvent
     - TMPro.TMP_Sprite
     - TMPro.TMP_SpriteCharacter
     - TMPro.TMP_SpriteGlyph
@@ -73,6 +81,9 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Scrollbar/ScrollEvent
     - UnityEngine.UI.SpriteState
   methodsToPreserve:
+  - assembly: Assembly-CSharp
+    fullTypeName: SteamManager
+    methodName: SendConsoleMsgFromInputField
   - assembly: Assembly-CSharp
     fullTypeName: LobbyManager
     methodName: RefreshLobbiesPressedAsync
@@ -120,6 +131,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1562}
     - Class: 114
+      Script: {instanceID: 1736}
+    - Class: 114
       Script: {instanceID: 2222}
     - Class: 114
       Script: {instanceID: 2348}
@@ -136,27 +149,31 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 4092}
     - Class: 114
+      Script: {instanceID: 4230}
+    - Class: 114
       Script: {instanceID: 4244}
     - Class: 114
-      Script: {instanceID: 4520}
+      Script: {instanceID: 4522}
     - Class: 114
-      Script: {instanceID: 5282}
+      Script: {instanceID: 5074}
     - Class: 114
-      Script: {instanceID: 5894}
+      Script: {instanceID: 5284}
     - Class: 114
-      Script: {instanceID: 5954}
+      Script: {instanceID: 5896}
     - Class: 114
-      Script: {instanceID: 6050}
+      Script: {instanceID: 5956}
     - Class: 114
-      Script: {instanceID: 6392}
+      Script: {instanceID: 6052}
     - Class: 114
-      Script: {instanceID: 6404}
+      Script: {instanceID: 6394}
     - Class: 114
-      Script: {instanceID: 6836}
+      Script: {instanceID: 6406}
     - Class: 114
-      Script: {instanceID: 6884}
+      Script: {instanceID: 6838}
     - Class: 114
-      Script: {instanceID: 7520}
+      Script: {instanceID: 6886}
+    - Class: 114
+      Script: {instanceID: 7522}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128

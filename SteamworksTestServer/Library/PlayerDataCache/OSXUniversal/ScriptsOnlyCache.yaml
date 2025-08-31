@@ -8,6 +8,7 @@ ScriptsOnlyBuild:
     - Packages.Rider.Editor.UnitTesting.CallbackData
     Unity.TextMeshPro.dll:
     - TMPro.TMP_FontAsset
+    - TMPro.TMP_InputField
     - TMPro.TMP_Settings
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
@@ -30,14 +31,14 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.ContentSizeFitter
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
+    - UnityEngine.UI.LayoutElement
     - UnityEngine.UI.Mask
     - UnityEngine.UI.RawImage
+    - UnityEngine.UI.RectMask2D
     - UnityEngine.UI.ScrollRect
     - UnityEngine.UI.Scrollbar
     - UnityEngine.UI.VerticalLayoutGroup
   serializedClasses:
-    Assembly-CSharp:
-    - SteamManager/PlayerInfo
     Unity.TextMeshPro:
     - TMPro.FaceInfo_Legacy
     - TMPro.FontAssetCreationSettings
@@ -48,6 +49,11 @@ ScriptsOnlyBuild:
     - TMPro.TMP_GlyphAdjustmentRecord
     - TMPro.TMP_GlyphPairAdjustmentRecord
     - TMPro.TMP_GlyphValueRecord
+    - TMPro.TMP_InputField/OnChangeEvent
+    - TMPro.TMP_InputField/SelectionEvent
+    - TMPro.TMP_InputField/SubmitEvent
+    - TMPro.TMP_InputField/TextSelectionEvent
+    - TMPro.TMP_InputField/TouchScreenKeyboardEvent
     - TMPro.TMP_Sprite
     - TMPro.TMP_SpriteCharacter
     - TMPro.TMP_SpriteGlyph
@@ -73,6 +79,9 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Scrollbar/ScrollEvent
     - UnityEngine.UI.SpriteState
   methodsToPreserve:
+  - assembly: Assembly-CSharp
+    fullTypeName: SteamManager
+    methodName: SendConsoleMsgFromInputField
   - assembly: Assembly-CSharp
     fullTypeName: LobbyManager
     methodName: RefreshLobbiesPressedAsync
@@ -120,43 +129,49 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1562}
     - Class: 114
-      Script: {instanceID: 2228}
+      Script: {instanceID: 1736}
     - Class: 114
-      Script: {instanceID: 2354}
+      Script: {instanceID: 2222}
     - Class: 114
-      Script: {instanceID: 2664}
+      Script: {instanceID: 2348}
     - Class: 114
-      Script: {instanceID: 2890}
+      Script: {instanceID: 2658}
     - Class: 114
-      Script: {instanceID: 3188}
+      Script: {instanceID: 2884}
     - Class: 114
-      Script: {instanceID: 3370}
+      Script: {instanceID: 3182}
     - Class: 114
-      Script: {instanceID: 3998}
+      Script: {instanceID: 3364}
     - Class: 114
-      Script: {instanceID: 4098}
+      Script: {instanceID: 3992}
     - Class: 114
-      Script: {instanceID: 4250}
+      Script: {instanceID: 4092}
     - Class: 114
-      Script: {instanceID: 4526}
+      Script: {instanceID: 4230}
     - Class: 114
-      Script: {instanceID: 5288}
+      Script: {instanceID: 4244}
     - Class: 114
-      Script: {instanceID: 5900}
+      Script: {instanceID: 4522}
     - Class: 114
-      Script: {instanceID: 5960}
+      Script: {instanceID: 5074}
     - Class: 114
-      Script: {instanceID: 6056}
+      Script: {instanceID: 5284}
     - Class: 114
-      Script: {instanceID: 6398}
+      Script: {instanceID: 5896}
     - Class: 114
-      Script: {instanceID: 6410}
+      Script: {instanceID: 5956}
     - Class: 114
-      Script: {instanceID: 6842}
+      Script: {instanceID: 6052}
     - Class: 114
-      Script: {instanceID: 6890}
+      Script: {instanceID: 6394}
     - Class: 114
-      Script: {instanceID: 7526}
+      Script: {instanceID: 6406}
+    - Class: 114
+      Script: {instanceID: 6838}
+    - Class: 114
+      Script: {instanceID: 6886}
+    - Class: 114
+      Script: {instanceID: 7522}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -494,7 +509,7 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
-      Hash: 112d99e412bf16b3e0719440cd1de03d
+      Hash: 25db906aab7064cc3cdf37f87cf9f258
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SteamManager

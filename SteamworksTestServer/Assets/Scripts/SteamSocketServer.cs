@@ -31,7 +31,28 @@ public class SteamSocketServer : SocketManager
         Console.ServerLog($"We got a message from {identity}!");
 
         // Send it right back
-        connection.SendMessage(data, size, SendType.Reliable);
+        //connection.SendMessage(data, size, SendType.Reliable);
+
+        RelaySocketMessageToConnections(data, size, messageNum, connection.Id);
+    }
+
+    public void RelaySocketMessageToConnections(IntPtr data, int size, long messageNum, uint authorConnectionId, bool relayBackToSender = false)
+    {
+        try
+        {
+            // Loop through connections to relay the message
+            foreach (Connection connection in Connected)
+            {
+                // Skip echoing back
+                if (!relayBackToSender && authorConnectionId == connection.Id) continue;
+
+                connection.SendMessage(data, size, SendType.Reliable);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.ServerLog($"Exception while relaying message: {e}");
+        }
     }
 }
 

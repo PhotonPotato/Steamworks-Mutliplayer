@@ -45,6 +45,6 @@ public sealed class Console : MonoBehaviour
     {
         if (Instance == null) return;
 
-        Instance.ConsoleText.text += $"\n[SERVER] {Mathf.Round(Time.time * 100) / 100}:\t {message}";
+        Instance.ConsoleText.text += $"\n{Mathf.Round(Time.time * 100) / 100}:\t[SERVER] {message}";
     }
 }

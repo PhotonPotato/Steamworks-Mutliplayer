@@ -1,7 +1,10 @@
 using System;
+using System.Buffers;
+using System.Text;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
+using TMPro;
 
 public class SteamManager : MonoBehaviour
 {
@@ -21,9 +24,9 @@ public class SteamManager : MonoBehaviour
 
     public uint appid = 480;
 
-    [Header("Player Connection Info")]
-    [SerializeField] private PlayerInfo myPlayerInfo;
-    [SerializeField] public bool isHost { get; private set; } = false;
+    //[Header("Player Connection Info")]
+    [SerializeField] public PlayerInfo myPlayerInfo { get; private set; }
+    [SerializeField] public bool isHost { get; set; } = false;
     [SerializeField] public bool activeServer { get; private set; } = false;
     [SerializeField] public bool activeConnection { get; private set; } = false;
 
@@ -90,19 +93,11 @@ public class SteamManager : MonoBehaviour
         {
             // Server
 
-            if (activeServer)
-            {
-                socketServer.Receive();
-            }
+            if (activeServer) socketServer.Receive();
         }
-        else
-        {
-            // Client
-            if (activeConnection)
-            {
-                connectionManager.Receive();
-            }
-        }
+       
+        // Client
+        if (activeConnection) connectionManager.Receive();
     }
 
 
@@ -232,59 +227,19 @@ public class SteamManager : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// Attempts to send a message of bytes to the connected socket server.
-    /// </summary>
-    /// <param name="msg"></param>
-    /// <param name="sendType"></param>
-    /// <param name="tryOnce"></param>
-    /// <param name="logSend"></param>
-    /// <returns></returns>
-    public bool SendMessageToSocketServer(byte[] msg, SendType sendType = SendType.Reliable, bool tryOnce = false, bool logSend = true)
+    public void SendConsoleMessageToSocketServer(string message)
     {
-        try
+        ConsoleChatMessage chatMsg = new()
         {
-            // Copy message data to heap and use IntPtr to send it
-            int size = msg.Length;
-            IntPtr msgPtr = System.Runtime.InteropServices.Marshal.AllocHGlobal(size);
+            chatMessage = message
+        };
 
-            System.Runtime.InteropServices.Marshal.Copy(msg, 0, msgPtr, size);
-
-            // Try send
-            Result result = connectionManager.Connection.SendMessage(msgPtr, size, sendType);
-
-            if (result == Result.OK)
-            {
-                // Success
-                Log($"Message send success ({size} bytes).");
-
-                System.Runtime.InteropServices.Marshal.FreeHGlobal(msgPtr);
-
-                return true;
-            }
-            else if (!tryOnce)
-            {
-                // Try once more
-                result = connectionManager.Connection.SendMessage(msgPtr, size, sendType);
-
-                System.Runtime.InteropServices.Marshal.FreeHGlobal(msgPtr);
-
-                return result == Result.OK;
-            }
-
-            // Send failed
-            Log($"Message send(s) failed. Send result: {result}");
-
-            return false;
-        }
-        catch (Exception e)
-        {
-            Log($"Failed to send message to server. Error: {e}");
-
-            return false;
-        }
+        Message msg = Message.CreateMessage(MessageType.ConsoleChat, JsonUtility.ToJson(chatMsg));
+        
+        connectionManager.SendMessageToSocketServer(msg, SendType.Reliable);
     }
+
+    #region testing
 
     public void RequestConnections()
     {
@@ -294,7 +249,16 @@ public class SteamManager : MonoBehaviour
 
         foreach (var connection in socketServer.Connected)
         {
-            Console.ServerLog("- " + connection.Id);
+            Console.ServerLog("- " + connection.Id + " state: " + connection.DetailedStatus());
         }
     }
+
+    public void SendConsoleMsgFromInputField(TMP_InputField field)
+    {
+        Log("Sending: " + field.text);
+        SendConsoleMessageToSocketServer(field.text);
+        field.SetTextWithoutNotify("");
+    }
+
+    #endregion
 }

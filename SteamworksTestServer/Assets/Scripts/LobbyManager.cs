@@ -70,6 +70,8 @@ public class LobbyManager : MonoBehaviour
             // Update the current lobby
             currentLobby = hostedLobby;
 
+            // My dumdass, i didnt set this and the whole steammanager was confused asf
+            SteamManager.Instance.isHost = true;
             return true;
         }
         catch (System.Exception e)
