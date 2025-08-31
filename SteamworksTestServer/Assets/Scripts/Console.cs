@@ -36,4 +36,15 @@ public sealed class Console : MonoBehaviour
 
         Instance.ConsoleText.text += $"\n{Mathf.Round(Time.time * 100) / 100}:\t {message}";
     }
+
+    /// <summary>
+    /// Same as log but adds a server tag
+    /// </summary>
+    /// <param name="message"></param>
+    public static void ServerLog(object message)
+    {
+        if (Instance == null) return;
+
+        Instance.ConsoleText.text += $"\n[SERVER] {Mathf.Round(Time.time * 100) / 100}:\t {message}";
+    }
 }

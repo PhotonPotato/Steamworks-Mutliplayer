@@ -77,6 +77,9 @@ ScriptsOnlyBuild:
     fullTypeName: LobbyManager
     methodName: RefreshLobbiesPressedAsync
   - assembly: Assembly-CSharp
+    fullTypeName: SteamManager
+    methodName: RequestConnections
+  - assembly: Assembly-CSharp
     fullTypeName: LobbyManager
     methodName: CreateLobbyPressedAsync
   - assembly: UnityEngine.CoreModule
@@ -117,43 +120,43 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1562}
     - Class: 114
-      Script: {instanceID: 2220}
+      Script: {instanceID: 2228}
     - Class: 114
-      Script: {instanceID: 2346}
+      Script: {instanceID: 2354}
     - Class: 114
-      Script: {instanceID: 2656}
+      Script: {instanceID: 2664}
     - Class: 114
-      Script: {instanceID: 2882}
+      Script: {instanceID: 2890}
     - Class: 114
-      Script: {instanceID: 3180}
+      Script: {instanceID: 3188}
     - Class: 114
-      Script: {instanceID: 3362}
+      Script: {instanceID: 3370}
     - Class: 114
-      Script: {instanceID: 3990}
+      Script: {instanceID: 3998}
     - Class: 114
-      Script: {instanceID: 4090}
+      Script: {instanceID: 4098}
     - Class: 114
-      Script: {instanceID: 4242}
+      Script: {instanceID: 4250}
     - Class: 114
-      Script: {instanceID: 4518}
+      Script: {instanceID: 4526}
     - Class: 114
-      Script: {instanceID: 5280}
+      Script: {instanceID: 5288}
     - Class: 114
-      Script: {instanceID: 5890}
+      Script: {instanceID: 5900}
     - Class: 114
-      Script: {instanceID: 5950}
+      Script: {instanceID: 5960}
     - Class: 114
-      Script: {instanceID: 6046}
+      Script: {instanceID: 6056}
     - Class: 114
-      Script: {instanceID: 6388}
+      Script: {instanceID: 6398}
     - Class: 114
-      Script: {instanceID: 6400}
+      Script: {instanceID: 6410}
     - Class: 114
-      Script: {instanceID: 6832}
+      Script: {instanceID: 6842}
     - Class: 114
-      Script: {instanceID: 6880}
+      Script: {instanceID: 6890}
     - Class: 114
-      Script: {instanceID: 7514}
+      Script: {instanceID: 7526}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -491,7 +494,7 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
-      Hash: 72720fc0394b98582db32469ea501a23
+      Hash: 112d99e412bf16b3e0719440cd1de03d
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SteamManager

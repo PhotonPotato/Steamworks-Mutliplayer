@@ -309,6 +309,8 @@
 "Assets/Scripts/LobbyManager.cs"
 "Assets/Scripts/SteamImageExtensions.cs"
 "Assets/Scripts/SteamManager.cs"
+"Assets/Scripts/SteamServerConnectionManager.cs"
+"Assets/Scripts/SteamSocketServer.cs"
 -langversion:9.0
 
 /deterministic

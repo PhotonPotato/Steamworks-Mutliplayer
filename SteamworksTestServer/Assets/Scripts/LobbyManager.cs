@@ -17,6 +17,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Lobby hostedLobby;
     [SerializeField] public List<Lobby> activeLobbies;
 
+    public List<Friend> otherPlayersInLobby;
+
     [Header("Refs")]
     public Transform UILobbyListContentParent;
     public GameObject UILobbyListingPrefab;
@@ -31,8 +33,19 @@ public class LobbyManager : MonoBehaviour
     private void Start()
     {
         activeLobbies = new List<Lobby>();
+
+        #region Callbacks
+        SteamMatchmaking.OnLobbyEntered += OnLobbyEntered;
+        SteamMatchmaking.OnLobbyMemberJoined += OnLobbyMemberJoined;
+        #endregion
     }
 
+    /// <summary>
+    /// Attempts to create+join a lobby (as host) and update current lobby.
+    /// </summary>
+    /// <param name="maxMembers">Maximum amount of player that can join this lobby</param>
+    /// <param name="publicLobby">Whether this lobby is public or private</param>
+    /// <returns>True if successful, false if not</returns>
     public async Task<bool> CreateLobby(int maxMembers = 100, bool publicLobby = true)
     {
         try
@@ -75,6 +88,10 @@ public class LobbyManager : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Gathers lobby list from steam matchmaking.
+    /// </summary>
+    /// <returns>True if successfull in gathering list, false if not.</returns>
     public async Task<bool> RefreshMultiplayerLobbies()
     {
         try
@@ -102,12 +119,14 @@ public class LobbyManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles getting an updated list of lobbies and updating lobby listings and their ui.
+    /// </summary>
     public async void RefreshLobbiesPressedAsync()
     {
         if (await RefreshMultiplayerLobbies())
         {
-            Log($"Active lobby count: {activeLobbies.Count}");
-            Log($"Listed lobby count: {UILobbyListContentParent.childCount}");
+            Log($"Lobby Counts. Active: {activeLobbies.Count} Listed: {UILobbyListContentParent.childCount}");
 
             // Check for discrepancy between ui and lobby list length
             int uiDiscrepancyAmt = activeLobbies.Count - UILobbyListContentParent.childCount;
@@ -153,36 +172,88 @@ public class LobbyManager : MonoBehaviour
 
                 // Set the join button on click to call the JoinPressed function using a handy lambda
                 Log("Creating onclick event. i: " + i);
-                
-                listing.GetComponentInChildren<Button>().onClick.AddListener(() => JoinLobbyPressed(i));
+                // K This is crazy but i actually gets changed by the time the button is pressed (bc its in a for loop) and
+                // ig this int is pass by ref here. (Check out my git commit with "Bug Joining Lobbies")
+                // Like if there is 1 lobby, JoinLobbyPressed will get a 1 when i == 0. I think its bc i would go to one
+                // in the for loop.
+                // Kinda a hackie fix but I need some way to pass the value of i so I'm making a temp variable and it seems
+                // to work fine.
+                int tempI = i;
+                listing.GetComponentInChildren<Button>().onClick.AddListener(() => JoinLobby(activeLobbies[tempI]));
             }
         }
     }
 
 
+    /// <summary>
+    /// Attempts to join a lobby.
+    /// </summary>
+    /// <param name="lobby"></param>
     public async void JoinLobby(Lobby lobby)
     {
         RoomEnter joinResult = await lobby.Join();
 
         if (joinResult == RoomEnter.Success)
         {
-            Log($"Joined lobby success id: {lobby.Id}");
+            Log($"Join lobby SUCCESS id: {lobby.Id}.");
 
             currentLobby = lobby;
-
-            //return true;
         }
         else
         {
-            Log($"Failed to join lobby id: {lobby.Id}. Result: {joinResult}.");
-            //return false;
+            Log($"Join lobby FAILED id: {lobby.Id}. Result: {joinResult}.");
         }
     }
 
-    public void JoinLobbyPressed(int lobbyIndex)
+
+    public void OnLobbyEntered(Lobby lobby)
     {
-        Log("Read join click event. Lobby index: " + lobbyIndex);
-        JoinLobby(activeLobbies[lobbyIndex]);
+        Log("Lobby entered");
+
+        // Check ownership
+        if (lobby.Owner.Id == SteamClient.SteamId)
+        {
+            // Owner
+
+            if (SteamManager.Instance.activeServer) Log("You are already in and hosting this server.");
+            else
+            {
+                Log("Calling server boot...");
+                // Spin up the socket server
+                SteamManager.Instance.CreateSteamSocketServer();
+            }
+        }
+        else
+        {
+            // Guest
+
+
+            // Join the server
+            if (SteamManager.Instance.activeConnection) Log("You have already joined this server.");
+            else SteamManager.Instance.JoinSteamSocketServer(lobby.Owner);
+        }
+        return;
+    }
+
+    public void OnLobbyMemberJoined(Lobby lobby, Friend friend)
+    {
+        Log($"{friend.Name} joined lobby.");
+
+        otherPlayersInLobby.Add(friend);
+    }
+
+    public void OnLobbyMemberLeave(Lobby lobby, Friend friend)
+    {
+        Log($"{friend.Name} left lobby.");
+
+        otherPlayersInLobby.Remove(friend);
+    }
+
+    public void OnLobbyMemberKicked(Lobby lobby, Friend friend)
+    {
+        Log($"{friend.Name} was kicked from lobby.");
+
+        otherPlayersInLobby.Remove(friend);
     }
 
     /// <summary>
