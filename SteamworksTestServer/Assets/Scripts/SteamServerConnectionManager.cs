@@ -33,13 +33,17 @@ public class SteamServerConnectionManager : ConnectionManager
         Console.Log($"Connection Got A Message #{messageNum}");
 
         // Process the message right here
+
+        byte[] rented = ArrayPool<byte>.Shared.Rent(size);
+
         try
         {
             if (size == 0) return;
 
             // Convert it from ptr striaght to string
             // NOTE: Only goes up to the first null char
-            string msgString = Marshal.PtrToStringUTF8(data);
+            Marshal.Copy(data, rented, 0, size);
+            string msgString = Encoding.UTF8.GetString(rented, 0, size);
 
             Message msg = JsonUtility.FromJson<Message>(msgString);
 
