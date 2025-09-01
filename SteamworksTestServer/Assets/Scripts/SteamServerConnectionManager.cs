@@ -8,16 +8,19 @@ using System.Runtime.InteropServices;
 
 public class SteamServerConnectionManager : ConnectionManager
 {
-    public override void OnConnected(ConnectionInfo info)
-    {
-        base.OnConnected(info);
-        Debug.Log("ConnectionOnConnected");
-    }
-
     public override void OnConnecting(ConnectionInfo info)
     {
         base.OnConnecting(info);
         Debug.Log("ConnectionOnConnecting");
+    }
+
+    public override void OnConnected(ConnectionInfo info)
+    {
+        base.OnConnected(info);
+        Debug.Log("ConnectionOnConnected");
+
+        // Start a refresh of the UI player listings
+        SteamManager.Instance.RequestLobbyInfoPackage();
     }
 
     public override void OnDisconnected(ConnectionInfo info)
@@ -58,9 +61,8 @@ public class SteamServerConnectionManager : ConnectionManager
 
                 case MessageType.LobbyInfoPackage:
                     LobbyInfoPackageMessage lobbyInfoPackageMessage = JsonUtility.FromJson<LobbyInfoPackageMessage>(msg.body);
-
+                    
                     LobbyManager.Instance.OnReceiveLobbyInfoPackage(lobbyInfoPackageMessage);
-                    Log("recved");
                     break;
             }
         }

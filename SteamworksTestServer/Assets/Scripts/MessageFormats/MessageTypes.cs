@@ -48,8 +48,8 @@ public struct LobbyInfoRequestMessage
 [Serializable]
 public struct LobbyInfoPackageMessage
 {
-    public Friend[] players;
-    public SteamId owner;
+    public PlayerInfo[] players;
+    public uint ownerIndex;
 
     /// <summary>
     /// Turns this LobbyInfoPackage into a Message format using json util.

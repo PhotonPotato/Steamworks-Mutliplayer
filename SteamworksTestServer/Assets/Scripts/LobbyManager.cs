@@ -17,7 +17,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Lobby hostedLobby;
     [SerializeField] public List<Lobby> activeLobbies;
 
-    public Friend[] playersInLobby;
+    public PlayerInfo[] playersInLobby;
+    public uint ownerIndex;
 
     [Header("Refs")]
     public Transform UILobbyListContentParent;
@@ -130,7 +131,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (await RefreshMultiplayerLobbies())
         {
-            Log($"Lobby Counts. Active: {activeLobbies.Count} Listed: {UILobbyListContentParent.childCount}");
+            Log($"Refreshign Lobby Listings. Active Lobby Listings: {activeLobbies.Count}");
 
             // Check for discrepancy between ui and lobby list length
             int uiDiscrepancyAmt = activeLobbies.Count - UILobbyListContentParent.childCount;
@@ -167,7 +168,6 @@ public class LobbyManager : MonoBehaviour
                 
                 if (ownerAvatar.HasValue)
                 {
-                    Log($"Gathered {activeLobbies[i].Owner.Name}'s avatar image.");
                     Texture2D avatar = ownerAvatar?.Covert();
                     
                     listing.GetComponentInChildren<RawImage>().texture = avatar;
@@ -261,12 +261,12 @@ public class LobbyManager : MonoBehaviour
         RequestLobbyInfoPackage();
     }
 
-    public void RefreshPlayerList()
+    public async void RefreshPlayerList()
     {
-        //Log($"PLayer Counts. Active: {playersInLobby.Length} Listed: {UIPlayerListContentParent.childCount}");
+        Log($"Refreshing Player Listings. Players in lobby: {playersInLobby.Length}");
 
         // Check for discrepancy between ui and lobby list length
-        int uiDiscrepancyAmt = activeLobbies.Count - UIPlayerListContentParent.childCount;
+        int uiDiscrepancyAmt = playersInLobby.Length - UIPlayerListContentParent.childCount;
         if (uiDiscrepancyAmt > 0)
         {
             // We need to add the diff
@@ -280,24 +280,24 @@ public class LobbyManager : MonoBehaviour
 
         
         // Go through the correct size list and update the elements
-        for (int i = 0; i < activeLobbies.Count; i++)
+        for (int i = 0; i < playersInLobby.Length; i++)
         {
             Transform listing = UIPlayerListContentParent.GetChild(i);
 
             TMP_Text[] textComponents = listing.GetComponentsInChildren<TMP_Text>();
 
-            textComponents[0].text = "Own: " + playersInLobby[i].Name;
+            textComponents[0].text = (i == ownerIndex ? "(Host) " : "") + playersInLobby[i].name;
 
             // This is where you would put the PFP of the player update
-            /*var ownerAvatar = await activeLobbies[i].Owner.GetSmallAvatarAsync();
+            var playerAvatar = await new Friend(new SteamId { Value = playersInLobby[i].steamId }).GetSmallAvatarAsync();
 
-            if (ownerAvatar.HasValue)
+            if (playerAvatar.HasValue)
             {
-                Log($"Gathered {activeLobbies[i].Owner.Name}'s avatar image.");
-                Texture2D avatar = ownerAvatar?.Covert();
+                Log($"Gathered {playersInLobby[i].name}'s avatar image.");
+                Texture2D avatar = playerAvatar?.Covert();
 
                 listing.GetComponentInChildren<RawImage>().texture = avatar;
-            }*/
+            }
 
 
             // Set the join button on click to call the JoinPressed function using a handy lambda

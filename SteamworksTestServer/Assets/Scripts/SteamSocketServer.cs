@@ -10,6 +10,7 @@ using System.Buffers;
 public class SteamSocketServer : SocketManager
 {
     List<Friend> connectedPlayers = new List<Friend>();
+    uint ownerIndex = 0; // Usually gonna be the first person to enter the server
 
     public override void OnConnecting(Connection connection, ConnectionInfo data)
     {
@@ -34,6 +35,7 @@ public class SteamSocketServer : SocketManager
 
         Console.ServerLog($"{friend.Name} has joined the game");
 
+        // Update the player list
         connectedPlayers.Add(friend);
     }
 
@@ -48,10 +50,9 @@ public class SteamSocketServer : SocketManager
     public override void OnMessage(Connection connection, NetIdentity identity, IntPtr data, int size, long messageNum, long recvTime, int channel)
     {
         base.OnMessage(connection, identity, data, size, messageNum, recvTime, channel);
-        Console.ServerLog($"We got a message from {connection.ConnectionName}!");
 
         // Check what kind of msg it is
-        byte[] rented = System.Buffers.ArrayPool<byte>.Shared.Rent(size);
+        byte[] rented = ArrayPool<byte>.Shared.Rent(size);
 
         try
         {
@@ -60,7 +61,7 @@ public class SteamSocketServer : SocketManager
             // Convert it from ptr striaght to string
             // NOTE: Only goes up to the first null char
             Marshal.Copy(data, rented, 0, size);
-            string msgString = System.Text.Encoding.UTF8.GetString(rented, 0, size);
+            string msgString = Encoding.UTF8.GetString(rented, 0, size);
 
             Message msg = JsonUtility.FromJson<Message>(msgString);
 
@@ -72,7 +73,13 @@ public class SteamSocketServer : SocketManager
                     break;
 
                 case MessageType.LobbyInfoRequest:
+                    Console.ServerLog($"Recieved a lobby info request from {connection.ConnectionName}");
+
                     SendMessageToClient(connection, BuildLobbyInfopackage().ToMessage(), SendType.Reliable);
+                    break;
+
+                default:
+                    Console.ServerLog($"We got a message from {connection.ConnectionName}!");
                     break;
             }
         }
@@ -148,14 +155,31 @@ public class SteamSocketServer : SocketManager
         }
     }
 
+    /// <summary>
+    /// Converts the List<Friend> into an array of PlayerInfo to send to client.
+    /// </summary>
+    /// <returns></returns>
     public LobbyInfoPackageMessage BuildLobbyInfopackage()
     {
-        Console.ServerLog("building pckg");
+        // K just learned that JSONUtility is useless and can only send basic
+        // structs without properits({get; set;}) only public fields. Soooo..
+        // no SteamId, no Friend bc those are Facepunches and are too complex
+        PlayerInfo[] players = new PlayerInfo[connectedPlayers.Count];
+
+        for (int i = 0; i < connectedPlayers.Count; i++)
+        {
+            players[i] = new()
+            {
+                name = connectedPlayers[i].Name,
+                steamId = connectedPlayers[i].Id.Value
+            };
+        }
+
         return new LobbyInfoPackageMessage()
-               {
-                    players = connectedPlayers.ToArray(),
-                    owner = 0
-               };
+        {
+            players = players,
+            ownerIndex = this.ownerIndex
+        };
     }
 }
 
