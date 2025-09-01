@@ -211,6 +211,11 @@ public class SteamManager : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Sends a string message to the socket server to be relayed to everyone on the server.
+    /// </summary>
+    /// <param name="message"></param>
     public void SendConsoleMessageToSocketServer(string message)
     {
         ConsoleChatMessage chatMsg = new()
@@ -223,6 +228,12 @@ public class SteamManager : MonoBehaviour
         
         connectionManager.SendMessageToSocketServer(msg, SendType.Reliable);
     }
+
+
+    /// <summary>
+    /// Gets a LobbyInfoPackage containing all of the players and the owner info
+    /// </summary>
+    public void RequestLobbyInfoPackage() => connectionManager.SendMessageToSocketServer(new LobbyInfoRequestMessage().ToMessage(), SendType.Reliable);
 
     #region testing
 
@@ -238,7 +249,7 @@ public class SteamManager : MonoBehaviour
             {
                 Value = (ulong) connection.UserData
             };
-            Console.ServerLog("- " + SteamFriends.RequestUserInformation(id) + " state: " + connection.DetailedStatus());
+            Console.ServerLog("- " + connection.ConnectionName + " state: " + connection.DetailedStatus());
         }
     }
 
@@ -248,6 +259,7 @@ public class SteamManager : MonoBehaviour
         SendConsoleMessageToSocketServer(field.text);
         field.SetTextWithoutNotify("");
     }
+
 
     #endregion
 }

@@ -1,10 +1,12 @@
 using UnityEngine;
 using System;
+using Steamworks;
 
 public enum MessageType
 {
     ConsoleChat,
-    Status,
+    LobbyInfoRequest,
+    LobbyInfoPackage,
     InputPackage,
     Position
 }
@@ -31,6 +33,30 @@ public struct Message
         };
 
         return msg;
+    }
+}
+
+[Serializable]
+public struct LobbyInfoRequestMessage
+{
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.LobbyInfoRequest, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct LobbyInfoPackageMessage
+{
+    public Friend[] players;
+    public SteamId owner;
+
+    /// <summary>
+    /// Turns this LobbyInfoPackage into a Message format using json util.
+    /// </summary>
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.LobbyInfoPackage, JsonUtility.ToJson(this));
     }
 }
 

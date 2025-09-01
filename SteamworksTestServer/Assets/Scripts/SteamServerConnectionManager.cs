@@ -55,6 +55,13 @@ public class SteamServerConnectionManager : ConnectionManager
 
                     Console.Log($"{consoleChatMessage.authorInfo.name} : {consoleChatMessage.chatMessage}");
                     break;
+
+                case MessageType.LobbyInfoPackage:
+                    LobbyInfoPackageMessage lobbyInfoPackageMessage = JsonUtility.FromJson<LobbyInfoPackageMessage>(msg.body);
+
+                    LobbyManager.Instance.OnReceiveLobbyInfoPackage(lobbyInfoPackageMessage);
+                    Log("recved");
+                    break;
             }
         }
         catch (Exception e)

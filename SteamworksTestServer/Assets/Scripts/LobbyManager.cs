@@ -17,12 +17,14 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] private Lobby hostedLobby;
     [SerializeField] public List<Lobby> activeLobbies;
 
-    public List<Friend> otherPlayersInLobby;
+    public Friend[] playersInLobby;
 
     [Header("Refs")]
     public Transform UILobbyListContentParent;
     public GameObject UILobbyListingPrefab;
 
+    public Transform UIPlayerListContentParent;
+    public GameObject UIPlayerListingPrefab;
 
     private void Awake()
     {
@@ -241,21 +243,84 @@ public class LobbyManager : MonoBehaviour
     {
         Log($"{friend.Name} joined lobby.");
 
-        otherPlayersInLobby.Add(friend);
+        // Update the lobby info
+        RequestLobbyInfoPackage();
     }
 
     public void OnLobbyMemberLeave(Lobby lobby, Friend friend)
     {
         Log($"{friend.Name} left lobby.");
 
-        otherPlayersInLobby.Remove(friend);
+        RequestLobbyInfoPackage();
     }
 
     public void OnLobbyMemberKicked(Lobby lobby, Friend friend)
     {
         Log($"{friend.Name} was kicked from lobby.");
 
-        otherPlayersInLobby.Remove(friend);
+        RequestLobbyInfoPackage();
+    }
+
+    public void RefreshPlayerList()
+    {
+        //Log($"PLayer Counts. Active: {playersInLobby.Length} Listed: {UIPlayerListContentParent.childCount}");
+
+        // Check for discrepancy between ui and lobby list length
+        int uiDiscrepancyAmt = activeLobbies.Count - UIPlayerListContentParent.childCount;
+        if (uiDiscrepancyAmt > 0)
+        {
+            // We need to add the diff
+            for (int i = 0; i < uiDiscrepancyAmt; i++) Instantiate(UIPlayerListingPrefab, UIPlayerListContentParent);
+        }
+        else if (uiDiscrepancyAmt < 0)
+        {
+            // We need to destroy the diff
+            for (int i = 0; i > uiDiscrepancyAmt; i--) DestroyImmediate(UIPlayerListContentParent.GetChild(0).gameObject);
+        }
+
+        
+        // Go through the correct size list and update the elements
+        for (int i = 0; i < activeLobbies.Count; i++)
+        {
+            Transform listing = UIPlayerListContentParent.GetChild(i);
+
+            TMP_Text[] textComponents = listing.GetComponentsInChildren<TMP_Text>();
+
+            textComponents[0].text = "Own: " + playersInLobby[i].Name;
+
+            // This is where you would put the PFP of the player update
+            /*var ownerAvatar = await activeLobbies[i].Owner.GetSmallAvatarAsync();
+
+            if (ownerAvatar.HasValue)
+            {
+                Log($"Gathered {activeLobbies[i].Owner.Name}'s avatar image.");
+                Texture2D avatar = ownerAvatar?.Covert();
+
+                listing.GetComponentInChildren<RawImage>().texture = avatar;
+            }*/
+
+
+            // Set the join button on click to call the JoinPressed function using a handy lambda
+
+            // K This is crazy but i actually gets changed by the time the button is pressed (bc its in a for loop) and
+            // ig this int is pass by ref here. (Check out my git commit with "Bug Joining Lobbies")
+            // Like if there is 1 lobby, JoinLobbyPressed will get a 1 when i == 0. I think its bc i would go to one
+            // in the for loop.
+            // Kinda a hackie fix but I need some way to pass the value of i so I'm making a temp variable and it seems
+            // to work fine.
+            //int tempI = i;
+            //listing.GetComponentInChildren<Button>().onClick.AddListener(() => JoinLobby(activeLobbies[tempI]));
+        }
+    }
+
+
+    public void RequestLobbyInfoPackage() => SteamManager.Instance.RequestLobbyInfoPackage();
+
+    public void OnReceiveLobbyInfoPackage(LobbyInfoPackageMessage info)
+    {
+        playersInLobby = info.players;
+        
+        RefreshPlayerList();
     }
 
     /// <summary>
