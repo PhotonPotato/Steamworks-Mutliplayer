@@ -13,6 +13,8 @@ ScriptsOnlyBuild:
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
     - TMPro.TextMeshProUGUI
+    Unity.Timeline.Editor.dll:
+    - TimelineProjectSettings
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
@@ -129,49 +131,49 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1562}
     - Class: 114
-      Script: {instanceID: 1736}
+      Script: {instanceID: 1738}
     - Class: 114
-      Script: {instanceID: 2222}
+      Script: {instanceID: 2224}
     - Class: 114
-      Script: {instanceID: 2348}
+      Script: {instanceID: 2350}
     - Class: 114
-      Script: {instanceID: 2658}
+      Script: {instanceID: 2660}
     - Class: 114
-      Script: {instanceID: 2884}
+      Script: {instanceID: 2886}
     - Class: 114
-      Script: {instanceID: 3182}
+      Script: {instanceID: 3184}
     - Class: 114
-      Script: {instanceID: 3364}
+      Script: {instanceID: 3366}
     - Class: 114
-      Script: {instanceID: 3992}
+      Script: {instanceID: 3994}
     - Class: 114
-      Script: {instanceID: 4092}
+      Script: {instanceID: 4094}
     - Class: 114
-      Script: {instanceID: 4230}
+      Script: {instanceID: 4232}
     - Class: 114
-      Script: {instanceID: 4244}
+      Script: {instanceID: 4246}
     - Class: 114
-      Script: {instanceID: 4522}
+      Script: {instanceID: 4524}
     - Class: 114
-      Script: {instanceID: 5074}
+      Script: {instanceID: 5076}
     - Class: 114
-      Script: {instanceID: 5284}
+      Script: {instanceID: 5286}
     - Class: 114
-      Script: {instanceID: 5896}
+      Script: {instanceID: 5898}
     - Class: 114
-      Script: {instanceID: 5956}
+      Script: {instanceID: 5958}
     - Class: 114
-      Script: {instanceID: 6052}
+      Script: {instanceID: 6054}
     - Class: 114
-      Script: {instanceID: 6394}
+      Script: {instanceID: 6396}
     - Class: 114
-      Script: {instanceID: 6406}
+      Script: {instanceID: 6408}
     - Class: 114
-      Script: {instanceID: 6838}
+      Script: {instanceID: 6840}
     - Class: 114
-      Script: {instanceID: 6886}
+      Script: {instanceID: 6888}
     - Class: 114
-      Script: {instanceID: 7522}
+      Script: {instanceID: 7524}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128

@@ -173,7 +173,7 @@ public class LobbyManager : MonoBehaviour
 
 
                 // Set the join button on click to call the JoinPressed function using a handy lambda
-                Log("Creating onclick event. i: " + i);
+
                 // K This is crazy but i actually gets changed by the time the button is pressed (bc its in a for loop) and
                 // ig this int is pass by ref here. (Check out my git commit with "Bug Joining Lobbies")
                 // Like if there is 1 lobby, JoinLobbyPressed will get a 1 when i == 0. I think its bc i would go to one

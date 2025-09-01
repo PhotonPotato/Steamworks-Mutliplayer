@@ -6,20 +6,21 @@ using Steamworks.Data;
 using UnityEngine;
 using TMPro;
 
+[Serializable]
+public struct PlayerInfo
+{
+    public string name;
+    public ulong steamId;
+
+    public PlayerInfo(string name, SteamId id)
+    {
+        this.name = name;
+        steamId = id.Value;
+    }
+}
+
 public class SteamManager : MonoBehaviour
 {
-    [Serializable]
-    public class PlayerInfo
-    {
-        public string name { get; private set; }
-        public SteamId steamId { get; private set; }
-
-        public PlayerInfo(string name, SteamId id)
-        {
-            this.name = name;
-            steamId = id;
-        }
-    }
     public static SteamManager Instance = null;
 
     public uint appid = 480;
@@ -61,8 +62,8 @@ public class SteamManager : MonoBehaviour
             // Gather this player info
             myPlayerInfo = new PlayerInfo
             (
-                SteamClient.Name,
-                SteamClient.SteamId
+                name = SteamClient.Name,
+                SteamClient.SteamId.Value
             );
 
             Log($"Logged in as {myPlayerInfo.steamId} : {myPlayerInfo.name}");
@@ -82,6 +83,9 @@ public class SteamManager : MonoBehaviour
         #region Callbacks
         SteamMatchmaking.OnLobbyCreated += OnLobbyCreatedCallBack;
         #endregion
+
+        // Refresh servers
+        LobbyManager.Instance.RefreshLobbiesPressedAsync();
     }
 
 
@@ -144,27 +148,6 @@ public class SteamManager : MonoBehaviour
     }
 
 
-    public void ProcessMessageFromSocketServer(IntPtr msgPtr, int size)
-    {
-        try
-        {
-            // Get the message and copy it from heap into stack
-            byte[] message = new byte[size];
-
-            System.Runtime.InteropServices.Marshal.Copy(msgPtr, message, 0, size);
-
-            string msgString = System.Text.Encoding.UTF8.GetString(message);
-
-
-            // For now just print the message to log
-            Console.ServerLog(msgString + $" ({size} bytes)");
-        }
-        catch (Exception e)
-        {
-            Log($"Failed to process message from server: {e}");
-        }
-    }
-
 
     /// <summary>
     /// Creates a steam socket server and connects the host to it.
@@ -193,6 +176,7 @@ public class SteamManager : MonoBehaviour
 
         connectionManager = SteamNetworkingSockets.ConnectRelay<SteamServerConnectionManager>(serverOwner.Id);
         connectionManager.Connection.ConnectionName = myPlayerInfo.name;
+        connectionManager.Connection.UserData = (long) myPlayerInfo.steamId;
         activeConnection = true;
     }
 
@@ -231,6 +215,7 @@ public class SteamManager : MonoBehaviour
     {
         ConsoleChatMessage chatMsg = new()
         {
+            authorInfo = myPlayerInfo,
             chatMessage = message
         };
 
@@ -249,7 +234,11 @@ public class SteamManager : MonoBehaviour
 
         foreach (var connection in socketServer.Connected)
         {
-            Console.ServerLog("- " + connection.Id + " state: " + connection.DetailedStatus());
+            SteamId id = new()
+            {
+                Value = (ulong) connection.UserData
+            };
+            Console.ServerLog("- " + SteamFriends.RequestUserInformation(id) + " state: " + connection.DetailedStatus());
         }
     }
 

@@ -5,6 +5,7 @@ public enum MessageType
 {
     ConsoleChat,
     Status,
+    InputPackage,
     Position
 }
 
@@ -36,6 +37,7 @@ public struct Message
 [Serializable]
 public struct ConsoleChatMessage
 {
+    public PlayerInfo authorInfo;
     public string chatMessage;
 
     /// <summary>
@@ -44,5 +46,18 @@ public struct ConsoleChatMessage
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.ConsoleChat, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct InputPackageMessage
+{
+
+    /// <summary>
+    /// Turns this InputPackage into a Message format using json util.
+    /// </summary>
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.InputPackage, JsonUtility.ToJson(this));
     }
 }

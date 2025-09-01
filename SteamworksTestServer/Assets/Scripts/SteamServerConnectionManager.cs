@@ -35,10 +35,11 @@ public class SteamServerConnectionManager : ConnectionManager
         // Process the message right here
         try
         {
-            // Convert it from ptr to string
-            byte[] msgBytes = new byte[size];
-            Marshal.Copy(data, msgBytes, 0, size);
-            string msgString = Encoding.UTF8.GetString(msgBytes);
+            if (size == 0) return;
+
+            // Convert it from ptr striaght to string
+            // NOTE: Only goes up to the first null char
+            string msgString = Marshal.PtrToStringUTF8(data);
 
             Message msg = JsonUtility.FromJson<Message>(msgString);
 
@@ -48,7 +49,7 @@ public class SteamServerConnectionManager : ConnectionManager
                 case MessageType.ConsoleChat:
                     ConsoleChatMessage consoleChatMessage = JsonUtility.FromJson<ConsoleChatMessage>(msg.body);
 
-                    Console.Log($"{msg.id} : {consoleChatMessage.chatMessage}");
+                    Console.Log($"{consoleChatMessage.authorInfo.name} : {consoleChatMessage.chatMessage}");
                     break;
             }
         }
@@ -72,11 +73,11 @@ public class SteamServerConnectionManager : ConnectionManager
         string jsonMessage = JsonUtility.ToJson(message);
 
         // Get the worst case byte count
-        int maxBytes = Encoding.ASCII.GetMaxByteCount(jsonMessage.Length);
+        int maxBytes = Encoding.UTF8.GetMaxByteCount(jsonMessage.Length);
         // Using the arrayppool is supposed to help performance and replace places where
         // arrays are being created and destroyed frequently (like making the buf every send)
         byte[] jsonMessageBuffer = ArrayPool<byte>.Shared.Rent(maxBytes);
-        int byteCount = Encoding.ASCII.GetBytes(jsonMessage, 0, jsonMessage.Length, jsonMessageBuffer, 0);
+        int byteCount = Encoding.UTF8.GetBytes(jsonMessage, 0, jsonMessage.Length, jsonMessageBuffer, 0);
 
         // Garb Collector stuff incoming
         // Keep in mind that the garb collector moves shit around so we have to pin it.
