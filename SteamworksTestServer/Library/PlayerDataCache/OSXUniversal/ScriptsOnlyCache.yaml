@@ -96,6 +96,9 @@ ScriptsOnlyBuild:
   - assembly: UnityEngine.CoreModule
     fullTypeName: UnityEngine.GameObject
     methodName: SetActive
+  - assembly: Assembly-CSharp
+    fullTypeName: LobbyManager
+    methodName: RequestLobbyInfoPackage
   sceneClasses:
     Assets/Scenes/Main.unity:
     - Class: 1
@@ -823,7 +826,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: bc7565da647b9bc6a8216945e01a564a
+      Hash: 96540d9f859c9e369ed2aab79ceadb79
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: LobbyManager

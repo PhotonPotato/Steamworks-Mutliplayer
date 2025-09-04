@@ -148,7 +148,6 @@ public class SteamManager : MonoBehaviour
     }
 
 
-
     /// <summary>
     /// Creates a steam socket server and connects the host to it.
     /// </summary>

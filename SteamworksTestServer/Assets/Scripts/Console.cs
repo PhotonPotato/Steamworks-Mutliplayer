@@ -8,6 +8,9 @@ public sealed class Console : MonoBehaviour
     public static Console Instance = null;
 
     public TMP_Text ConsoleText;
+    public TMP_InputField ConsoleInput;
+
+    public bool trySendingInputToServerAsClient = true;
 
     public void Awake()
     {
@@ -18,6 +21,9 @@ public sealed class Console : MonoBehaviour
             // Clean the console off rip
             ClearConsole();
         }
+
+        // Hook up the input submitted to out listening function
+        ConsoleInput.onSubmit.AddListener(OnConsoleInputSubmitted);
     }
 
     public static void ClearConsole()
@@ -46,5 +52,26 @@ public sealed class Console : MonoBehaviour
         if (Instance == null) return;
 
         Instance.ConsoleText.text += $"\n<color=#459c2d>{Mathf.Round(Time.time * 100) / 100}</color>:\t<b><color=#7851a9>[SERVER]</color></b> {message}";
+    }
+
+
+    /// <summary>
+    /// Runs when the ucer submits console input and tries to send said input to the server as the client.
+    /// </summary>
+    /// <param name="input"></param>
+    public void OnConsoleInputSubmitted(string input)
+    {
+        if (SteamManager.Instance != null)
+        {
+            // HERE IS WHERE TO PARSE CONSOLE INPUTS INTO COMMANDS OR WHATEVER
+            // YOU WOULD LIKE TO DO
+
+            if (trySendingInputToServerAsClient)
+            {
+                SteamManager.Instance.SendConsoleMessageToSocketServer(input);
+            }
+
+            ConsoleInput.text = "";
+        }
     }
 }

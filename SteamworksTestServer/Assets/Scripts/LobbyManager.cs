@@ -131,7 +131,7 @@ public class LobbyManager : MonoBehaviour
     {
         if (await RefreshMultiplayerLobbies())
         {
-            Log($"Refreshign Lobby Listings. Active Lobby Listings: {activeLobbies.Count}");
+            Log($"Refreshing Lobby Listings. Active Lobby Listings: {activeLobbies.Count}");
 
             // Check for discrepancy between ui and lobby list length
             int uiDiscrepancyAmt = activeLobbies.Count - UILobbyListContentParent.childCount;

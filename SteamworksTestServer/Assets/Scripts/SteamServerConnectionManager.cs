@@ -56,7 +56,7 @@ public class SteamServerConnectionManager : ConnectionManager
                 case MessageType.ConsoleChat:
                     ConsoleChatMessage consoleChatMessage = JsonUtility.FromJson<ConsoleChatMessage>(msg.body);
 
-                    Console.Log($"{consoleChatMessage.authorInfo.name} : {consoleChatMessage.chatMessage}");
+                    Console.Log($"<color=#eba134>{consoleChatMessage.authorInfo.name}</color>: {consoleChatMessage.chatMessage}");
                     break;
 
                 case MessageType.LobbyInfoPackage:
