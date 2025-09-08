@@ -14,12 +14,12 @@ public sealed class Console : MonoBehaviour
 
     public void Awake()
     {
-        if (Instance == null) Instance = this;
+        Instance = this;
 
         if (Instance == this)
         {
             // Clean the console off rip
-            ClearConsole();
+            // ClearConsole();
         }
 
         // Hook up the input submitted to out listening function

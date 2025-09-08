@@ -1,8 +1,11 @@
 ScriptsOnlyBuild:
   usedScripts:
     Assembly-CSharp.dll:
+    - BetweenGamesManager
     - Console
+    - GameFlowManager
     - LobbyManager
+    - MainMenuManager
     - SteamManager
     Unity.Rider.Editor.dll:
     - Packages.Rider.Editor.UnitTesting.CallbackData
@@ -13,8 +16,6 @@ ScriptsOnlyBuild:
     - TMPro.TMP_SpriteAsset
     - TMPro.TMP_StyleSheet
     - TMPro.TextMeshProUGUI
-    Unity.Timeline.Editor.dll:
-    - TimelineProjectSettings
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
@@ -85,21 +86,100 @@ ScriptsOnlyBuild:
     fullTypeName: SteamManager
     methodName: SendConsoleMsgFromInputField
   - assembly: Assembly-CSharp
-    fullTypeName: LobbyManager
+    fullTypeName: MainMenuManager
+    methodName: OnJoinGameMenuOpened
+  - assembly: Assembly-CSharp
+    fullTypeName: MainMenuManager
     methodName: RefreshLobbiesPressedAsync
   - assembly: Assembly-CSharp
     fullTypeName: SteamManager
     methodName: RequestConnections
   - assembly: Assembly-CSharp
-    fullTypeName: LobbyManager
-    methodName: CreateLobbyPressedAsync
-  - assembly: UnityEngine.CoreModule
-    fullTypeName: UnityEngine.GameObject
-    methodName: SetActive
+    fullTypeName: MainMenuManager
+    methodName: OnHostGameMenuOpen
   - assembly: Assembly-CSharp
-    fullTypeName: LobbyManager
-    methodName: RequestLobbyInfoPackage
+    fullTypeName: MainMenuManager
+    methodName: CreateLobbyPressedAsync
+  - assembly: Assembly-CSharp
+    fullTypeName: BetweenGamesManager
+    methodName: OnExitLobbyPressed
+  - assembly: Assembly-CSharp
+    fullTypeName: BetweenGamesManager
+    methodName: OnRefreshPlayerListPressed
   sceneClasses:
+    Assets/Scenes/BetweenGames.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 89
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 1562}
+    - Class: 114
+      Script: {instanceID: 1736}
+    - Class: 114
+      Script: {instanceID: 2350}
+    - Class: 114
+      Script: {instanceID: 2660}
+    - Class: 114
+      Script: {instanceID: 2886}
+    - Class: 114
+      Script: {instanceID: 3184}
+    - Class: 114
+      Script: {instanceID: 3366}
+    - Class: 114
+      Script: {instanceID: 3994}
+    - Class: 114
+      Script: {instanceID: 4232}
+    - Class: 114
+      Script: {instanceID: 5076}
+    - Class: 114
+      Script: {instanceID: 5286}
+    - Class: 114
+      Script: {instanceID: 5898}
+    - Class: 114
+      Script: {instanceID: 5958}
+    - Class: 114
+      Script: {instanceID: 6054}
+    - Class: 114
+      Script: {instanceID: 6396}
+    - Class: 114
+      Script: {instanceID: 6408}
+    - Class: 114
+      Script: {instanceID: 6842}
+    - Class: 114
+      Script: {instanceID: 7528}
+    - Class: 114
+      Script: {instanceID: 25608}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
     Assets/Scenes/Main.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -134,7 +214,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1562}
     - Class: 114
-      Script: {instanceID: 1738}
+      Script: {instanceID: 1736}
+    - Class: 114
+      Script: {instanceID: 2124}
     - Class: 114
       Script: {instanceID: 2224}
     - Class: 114
@@ -172,11 +254,13 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 6408}
     - Class: 114
-      Script: {instanceID: 6840}
+      Script: {instanceID: 6842}
     - Class: 114
-      Script: {instanceID: 6888}
+      Script: {instanceID: 6890}
     - Class: 114
-      Script: {instanceID: 7524}
+      Script: {instanceID: 7310}
+    - Class: 114
+      Script: {instanceID: 7528}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -248,6 +332,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnMouseExitMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 2a21d5d9e1a920ddd1a84b597d86c900
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameFlowManager
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -730,7 +820,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: 032c23d1b0beb825462acc87e21d052b
+      Hash: 91ba1c158affb3c9e73ea90566214457
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Console
@@ -790,6 +880,12 @@ ScriptsOnlyBuild:
     className: BeforeAfterTestCommandState
   - hash:
       serializedVersion: 2
+      Hash: c2fd95cb328e8dcfe61f52bd91adff84
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TestScript
+  - hash:
+      serializedVersion: 2
       Hash: 4fd8bf02e3089425d3502e26c44ba31a
     assemblyName: Unity.TextMeshPro.dll
     namespaceName: TMPro
@@ -826,7 +922,7 @@ ScriptsOnlyBuild:
     className: VerticalLayoutGroup
   - hash:
       serializedVersion: 2
-      Hash: 96540d9f859c9e369ed2aab79ceadb79
+      Hash: 56bf5644515946c57811f20f2ec9ab4a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: LobbyManager
@@ -902,6 +998,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: SignalTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 6c9771ca0723530264df9c4885d6bfdb
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MainMenuManager
   - hash:
       serializedVersion: 2
       Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
@@ -986,8 +1088,15 @@ ScriptsOnlyBuild:
     assemblyName: Unity.VisualScripting.Core.dll
     namespaceName: Unity.VisualScripting
     className: UnityOnSliderValueChangedMessageListener
+  - hash:
+      serializedVersion: 2
+      Hash: 4f269abbdd14bec448a60bdd4ad6010b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: BetweenGamesManager
   platform: 2
   scenePathNames:
   - Assets/Scenes/Main.unity
+  - Assets/Scenes/BetweenGames.unity
   playerPath: /Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Builds/P2P
     Client Build.app

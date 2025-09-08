@@ -168,11 +168,7 @@ public class SteamSocketServer : SocketManager
 
         for (int i = 0; i < connectedPlayers.Count; i++)
         {
-            players[i] = new()
-            {
-                name = connectedPlayers[i].Name,
-                steamId = connectedPlayers[i].Id.Value
-            };
+            players[i] = new PlayerInfo(connectedPlayers[i].Name, connectedPlayers[i].Id.Value);
         }
 
         return new LobbyInfoPackageMessage()
