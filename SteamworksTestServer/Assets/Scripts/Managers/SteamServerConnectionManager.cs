@@ -22,11 +22,13 @@ public class SteamServerConnectionManager : ConnectionManager
         // Start a refresh of the UI player listings
         SteamManager.Instance.RequestLobbyInfoPackage();
     }
-
+    
     public override void OnDisconnected(ConnectionInfo info)
     {
         base.OnDisconnected(info);
         Debug.Log("ConnectionOnDisconnected");
+
+        LobbyManager.Instance.LeaveCurrentLobby();
     }
 
     public override void OnMessage(IntPtr data, int size, long messageNum, long recvTime, int channel)
@@ -64,6 +66,11 @@ public class SteamServerConnectionManager : ConnectionManager
                     
                     LobbyManager.Instance.OnReceiveLobbyInfoPackage(lobbyInfoPackageMessage);
                     break;
+
+                case MessageType.ServerTimestampPackage:
+                    // Fwd it to the time keeper if there is one
+                    TimeKeeper.Instance?.OnReceiveServerTimestamp(JsonUtility.FromJson<ServerTimestampPackageMessage>(msg.body));
+                    break;
             }
         }
         catch (Exception e)
@@ -71,7 +78,6 @@ public class SteamServerConnectionManager : ConnectionManager
             Console.Log($"Exception when parsing message: {e}");
         }
     }
-
 
     /// <summary>
     /// Attempts to send a message of bytes to the connected socket server.

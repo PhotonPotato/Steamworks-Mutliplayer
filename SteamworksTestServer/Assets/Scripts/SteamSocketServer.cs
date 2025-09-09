@@ -12,6 +12,8 @@ public class SteamSocketServer : SocketManager
     List<Friend> connectedPlayers = new List<Friend>();
     uint ownerIndex = 0; // Usually gonna be the first person to enter the server
 
+    DateTime lastServerTime;
+
     public override void OnConnecting(Connection connection, ConnectionInfo data)
     {
         base.OnConnecting(connection, data);
@@ -77,6 +79,13 @@ public class SteamSocketServer : SocketManager
 
                     SendMessageToClient(connection, BuildLobbyInfopackage().ToMessage(), SendType.Reliable);
                     break;
+
+                case MessageType.ServerTimestampRequest:
+                    Console.ServerLog($"Received a serverTimestampRequest from {connection.ConnectionName}");
+
+                    SendMessageToClient(connection, BuildServerTimestampPackage().ToMessage(), SendType.Reliable);
+                    break;
+
 
                 default:
                     Console.ServerLog($"We got a message from {connection.ConnectionName}!");
@@ -175,6 +184,30 @@ public class SteamSocketServer : SocketManager
         {
             players = players,
             ownerIndex = this.ownerIndex
+        };
+    }
+
+    /// <summary>
+    /// Get the UTC time using a NTP asset from the asset store
+    /// </summary>
+    public DateTime GetNetworkTime()
+    {
+        using (NtpClient client = new NtpClient("time.windows.com"))
+        {
+            return client.GetNetworkTime();
+        }
+    }
+
+    public ServerTimestampPackageMessage BuildServerTimestampPackage()
+    {
+        // TODO: keep track of the server time using time since instead
+        //       constant GetNetworkTime() calls
+        lastServerTime = GetNetworkTime();
+        Console.ServerLog(lastServerTime);
+        return new ServerTimestampPackageMessage
+        {
+            // Apparently "o" is the flag for a round trip format, not sure y thats important
+            timeData = lastServerTime.ToString("o")
         };
     }
 }

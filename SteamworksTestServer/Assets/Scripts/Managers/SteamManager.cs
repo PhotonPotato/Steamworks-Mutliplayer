@@ -5,6 +5,7 @@ using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
 using TMPro;
+using System.Threading.Tasks;
 
 [Serializable]
 public class PlayerInfo
@@ -104,11 +105,15 @@ public class SteamManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
+        if (Instance != this) return;
+
         try
         {
-            LeaveOrShutdownSteamSocketServer();
+            LeaveOrShutdown();
 
-            SteamClient.Shutdown();
+            if (SteamClient.IsValid) SteamClient.Shutdown();
+            else Log("Invalid Client on shutdown.");
+
             Log("Shutdown!");
         }
         catch
@@ -120,7 +125,7 @@ public class SteamManager : MonoBehaviour
 
     void OnDestroy()
     {
-        SteamClient.Shutdown();
+        OnApplicationQuit();
     }
 
 
@@ -180,21 +185,43 @@ public class SteamManager : MonoBehaviour
     /// <summary>
     /// Attempt to leave the current server, shutting it down if we are the host.
     /// </summary>
-    public void LeaveOrShutdownSteamSocketServer()
+    public async Task LeaveOrShutdownSteamSocketServerAsync()
     {
-        if (!activeConnection) return;
+        LobbyManager.Instance.LeaveCurrentLobby();
+
 
         // TODO : not super readable that the function does a check
         // Try to boot everyone (Only runs if we are host)
         KickEveryoneFromSocketServer();
 
-        // Close the connection and server
-        connectionManager.Close();
-        if(isHost) socketServer.Close();
+        
+        // Close our client connection (host and guests both have this)
+        if (connectionManager != null)
+        {
+            connectionManager.Close();
+            connectionManager = null;
+        }
 
+        // Close the server if we were hosting
+        if (isHost && socketServer != null)
+        {
+            socketServer.Close();
+            socketServer = null;
+        }
+
+        // Reset flags deterministically
         activeConnection = false;
+        activeServer = false;
         isHost = false;
+
+        // Give Steam callbacks a tick to settle
+        await Task.Yield();
+        await Task.Yield();
     }
+    public void LeaveOrShutdown() => LeaveOrShutdownSteamSocketServerAsync().ContinueWith(t =>
+    {
+        if (t.IsFaulted) Debug.LogException(t.Exception);
+    });
 
 
     /// <summary>
@@ -202,7 +229,7 @@ public class SteamManager : MonoBehaviour
     /// </summary>
     public void KickEveryoneFromSocketServer()
     {
-        if (isHost && activeServer)
+        if (isHost && activeServer && socketServer != null)
         {
             foreach (var connection in socketServer.Connected)
             {
@@ -223,7 +250,7 @@ public class SteamManager : MonoBehaviour
             authorInfo = myPlayerInfo,
             chatMessage = message
         };
-
+        
         Message msg = Message.CreateMessage(MessageType.ConsoleChat, JsonUtility.ToJson(chatMsg));
         
         connectionManager.SendMessageToSocketServer(msg, SendType.Reliable);
@@ -234,6 +261,11 @@ public class SteamManager : MonoBehaviour
     /// Gets a LobbyInfoPackage containing all of the players and the owner info
     /// </summary>
     public void RequestLobbyInfoPackage() => connectionManager.SendMessageToSocketServer(new LobbyInfoRequestMessage().ToMessage(), SendType.Reliable);
+
+    /// <summary>
+    /// Gets a ServerTimestampPackage containing all of the players and the owner info
+    /// </summary>
+    public void RequestServerTimestampPackage() => connectionManager.SendMessageToSocketServer(new ServerTimestampRequestMessage().ToMessage(), SendType.Reliable);
 
     #region testing
 

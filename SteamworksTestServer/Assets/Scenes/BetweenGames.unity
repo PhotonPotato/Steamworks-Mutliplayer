@@ -623,9 +623,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 844644724}
-        m_TargetAssemblyTypeName: LobbyManager, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 844644726}
+        m_TargetAssemblyTypeName: BetweenGamesManager, Assembly-CSharp
+        m_MethodName: OnStartGamePressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

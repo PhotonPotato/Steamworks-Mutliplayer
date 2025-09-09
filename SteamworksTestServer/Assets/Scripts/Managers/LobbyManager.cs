@@ -14,7 +14,7 @@ public class LobbyManager : MonoBehaviour
     public static LobbyManager Instance;
 
     [Header("Lobby Vars")]
-    [SerializeField] private Lobby? currentLobby = null;
+    public Lobby? currentLobby = null;
     [SerializeField] private Lobby hostedLobby;
 
     public PlayerInfo[] playersInLobby;
@@ -42,8 +42,16 @@ public class LobbyManager : MonoBehaviour
     /// <returns>True if successful, false if not</returns>
     public async Task<bool> CreateLobby(int maxMembers = 100, bool publicLobby = true)
     {
+        await SteamManager.Instance.LeaveOrShutdownSteamSocketServerAsync();
+
         try
         {
+            if (!SteamClient.IsValid)
+            {
+                Log("Steam client not valid before lobby creation");
+                return false;
+            }
+
             // Attempt to create a lobby
             var createLobbyResult = await SteamMatchmaking.CreateLobbyAsync(maxMembers);
 
@@ -193,6 +201,11 @@ public class LobbyManager : MonoBehaviour
         RequestLobbyInfoPackage();
     }
 
+    public void LeaveCurrentLobby()
+    {
+        currentLobby?.Leave();
+        currentLobby = null;
+    }
 
     public void RequestLobbyInfoPackage() => SteamManager.Instance.RequestLobbyInfoPackage();
 
@@ -203,6 +216,31 @@ public class LobbyManager : MonoBehaviour
 
         // TODO: Choose what to do based on the 
         BetweenGamesManager.Instance?.RefreshPlayerList(newPlayersInfo: info.players);
+    }
+
+
+    /// <summary>
+    /// If host, sets lobby to publc and joinable
+    /// </summary>
+    public void OpenLobbyToPublic()
+    {
+        if (SteamManager.Instance.isHost)
+        {
+            hostedLobby.SetPublic();
+            hostedLobby.SetJoinable(true);
+        }
+    }
+
+    /// <summary>
+    /// If host, sets lobby to private and not joinable
+    /// </summary>
+    public void CloseLobbyFromPublic()
+    {
+        if (SteamManager.Instance.isHost)
+        {
+            hostedLobby.SetPrivate();
+            hostedLobby.SetJoinable(false);
+        }
     }
 
 

@@ -11,7 +11,7 @@ public class TestScript : MonoBehaviour
         using (NtpClient client = new NtpClient("time.windows.com"))
         {
             DateTime dt = client.GetNetworkTime();
-
+            
             string timeUTC = "Network Time(UTC): " + dt.ToString();
 
             string time = "Network Time: " + dt.ToLocalTime().ToString();

@@ -7,6 +7,8 @@ public enum MessageType
     ConsoleChat,
     LobbyInfoRequest,
     LobbyInfoPackage,
+    ServerTimestampRequest,
+    ServerTimestampPackage,
     InputPackage,
     Position
 }
@@ -85,5 +87,25 @@ public struct InputPackageMessage
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.InputPackage, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct ServerTimestampRequestMessage
+{
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.ServerTimestampRequest, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct ServerTimestampPackageMessage
+{
+    public string timeData;
+
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.ServerTimestampPackage, JsonUtility.ToJson(this));
     }
 }
