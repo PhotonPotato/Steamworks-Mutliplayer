@@ -4,8 +4,10 @@ ScriptsOnlyBuild:
     - BetweenGamesManager
     - Console
     - GameFlowManager
+    - GameManager
     - LobbyManager
     - MainMenuManager
+    - PlayerSpawnManager
     - SteamManager
     - TimeKeeper
     Unity.Rider.Editor.dll:
@@ -110,6 +112,12 @@ ScriptsOnlyBuild:
   - assembly: Assembly-CSharp
     fullTypeName: BetweenGamesManager
     methodName: OnRefreshPlayerListPressed
+  - assembly: Assembly-CSharp
+    fullTypeName: Console
+    methodName: OnOpenConsole
+  - assembly: Assembly-CSharp
+    fullTypeName: Console
+    methodName: OnCloseConsole
   sceneClasses:
     Assets/Scenes/BetweenGames.unity:
     - Class: 1
@@ -193,9 +201,19 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 21
       Script: {instanceID: 0}
+    - Class: 23
+      Script: {instanceID: 0}
     - Class: 28
       Script: {instanceID: 0}
+    - Class: 33
+      Script: {instanceID: 0}
+    - Class: 43
+      Script: {instanceID: 0}
     - Class: 48
+      Script: {instanceID: 0}
+    - Class: 54
+      Script: {instanceID: 0}
+    - Class: 65
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
@@ -213,6 +231,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 2662}
     - Class: 114
       Script: {instanceID: 2888}
+    - Class: 114
+      Script: {instanceID: 3186}
     - Class: 114
       Script: {instanceID: 3368}
     - Class: 114
@@ -239,9 +259,15 @@ ScriptsOnlyBuild:
       Script: {instanceID: 7532}
     - Class: 114
       Script: {instanceID: 42382}
+    - Class: 114
+      Script: {instanceID: 55568}
+    - Class: 114
+      Script: {instanceID: 56254}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
+      Script: {instanceID: 0}
+    - Class: 136
       Script: {instanceID: 0}
     - Class: 157
       Script: {instanceID: 0}
@@ -901,7 +927,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: 91ba1c158affb3c9e73ea90566214457
+      Hash: 2ef9853538cb127bdb8462a4450e63fb
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Console
@@ -1171,10 +1197,22 @@ ScriptsOnlyBuild:
     className: UnityOnSliderValueChangedMessageListener
   - hash:
       serializedVersion: 2
-      Hash: 627abe26e63d846f4c2588eaaa94b0ae
+      Hash: 41f6534db2d30eed8993587db7db2648
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: TimeKeeper
+  - hash:
+      serializedVersion: 2
+      Hash: d2e890fa595d33c5b63b34cd1b1aa6b5
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: PlayerSpawnManager
+  - hash:
+      serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameManager
   platform: 2
   scenePathNames:
   - Assets/Scenes/Main.unity

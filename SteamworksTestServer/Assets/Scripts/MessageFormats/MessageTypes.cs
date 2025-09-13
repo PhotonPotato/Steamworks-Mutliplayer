@@ -5,10 +5,15 @@ using Steamworks;
 public enum MessageType
 {
     ConsoleChat,
+
     LobbyInfoRequest,
     LobbyInfoPackage,
+
     ServerTimestampRequest,
     ServerTimestampPackage,
+    GameStartTimestampRequest,
+    GameStartTimestampPackage,
+
     InputPackage,
     Position
 }
@@ -97,6 +102,11 @@ public struct ServerTimestampRequestMessage
     {
         return Message.CreateMessage(MessageType.ServerTimestampRequest, JsonUtility.ToJson(this));
     }
+
+    public Message ToGameStartRequestMessage()
+    {
+        return Message.CreateMessage(MessageType.GameStartTimestampRequest, JsonUtility.ToJson(this));
+    }
 }
 
 [Serializable]
@@ -107,5 +117,10 @@ public struct ServerTimestampPackageMessage
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.ServerTimestampPackage, JsonUtility.ToJson(this));
+    }
+
+    public Message ToGameStartTimestampMessage()
+    {
+        return Message.CreateMessage(MessageType.GameStartTimestampPackage, JsonUtility.ToJson(this));
     }
 }

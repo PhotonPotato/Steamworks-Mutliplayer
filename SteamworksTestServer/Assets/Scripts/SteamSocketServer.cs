@@ -86,6 +86,13 @@ public class SteamSocketServer : SocketManager
                     SendMessageToClient(connection, BuildServerTimestampPackage().ToMessage(), SendType.Reliable);
                     break;
 
+                case MessageType.GameStartTimestampRequest:
+                    Console.ServerLog($"Received a gameStartTimestampRequest from {connection.ConnectionName}");
+
+                    // Send a timestamp with a "GameStart" type
+                    SendMessageToClient(connection, BuildServerTimestampPackage().ToGameStartTimestampMessage(), SendType.Reliable);
+                    break;
+
 
                 default:
                     Console.ServerLog($"We got a message from {connection.ConnectionName}!");

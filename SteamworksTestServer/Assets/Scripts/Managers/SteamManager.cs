@@ -171,7 +171,11 @@ public class SteamManager : MonoBehaviour
     /// </summary>
     public void JoinSteamSocketServer(Friend serverOwner)
     {
-        if (isHost) Log("Client is host, cannot join socket server.");
+        if (isHost)
+        {
+            Log("Client is host, cannot join socket server.");
+            return;
+        }
 
         Log($"Attemptint to join {serverOwner.Name}'s socket server...");
 
@@ -266,6 +270,11 @@ public class SteamManager : MonoBehaviour
     /// Gets a ServerTimestampPackage containing all of the players and the owner info
     /// </summary>
     public void RequestServerTimestampPackage() => connectionManager.SendMessageToSocketServer(new ServerTimestampRequestMessage().ToMessage(), SendType.Reliable);
+
+    /// <summary>
+    /// Sends a modified server timestamp request message just with a "GameStart" message type
+    /// </summary>
+    public void RequestGameStartTimestampPackage() => connectionManager.SendMessageToSocketServer(new ServerTimestampRequestMessage().ToGameStartRequestMessage(), SendType.Reliable);
 
     #region testing
 

@@ -1,29 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public sealed class Console : MonoBehaviour
 {
     public static Console Instance = null;
 
+    [Header("Refs")]
+    public Button OpenConsoleButton = null;
     public TMP_Text ConsoleText;
     public TMP_InputField ConsoleInput;
 
+    [Header("Settings")]
     public bool trySendingInputToServerAsClient = true;
-
+    public bool hideOnStart = false;
+   
     public void Awake()
     {
         Instance = this;
 
-        if (Instance == this)
-        {
-            // Clean the console off rip
-            // ClearConsole();
-        }
-
         // Hook up the input submitted to out listening function
         ConsoleInput.onSubmit.AddListener(OnConsoleInputSubmitted);
+
+        if (hideOnStart) OnCloseConsole();
     }
 
     public static void ClearConsole()
@@ -73,5 +74,23 @@ public sealed class Console : MonoBehaviour
 
             ConsoleInput.text = "";
         }
+    }
+
+    /// <summary>
+    /// Hides the console and tries to show the open button.
+    /// </summary>
+    public void OnCloseConsole()
+    {
+        gameObject.SetActive(false);
+        OpenConsoleButton?.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// Shows the console and tries to hide the open button.
+    /// </summary>
+    public void OnOpenConsole()
+    {
+        gameObject.SetActive(true);
+        OpenConsoleButton?.gameObject.SetActive(false);
     }
 }

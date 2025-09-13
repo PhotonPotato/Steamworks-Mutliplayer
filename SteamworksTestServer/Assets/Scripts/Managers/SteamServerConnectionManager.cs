@@ -71,6 +71,11 @@ public class SteamServerConnectionManager : ConnectionManager
                     // Fwd it to the time keeper if there is one
                     TimeKeeper.Instance?.OnReceiveServerTimestamp(JsonUtility.FromJson<ServerTimestampPackageMessage>(msg.body));
                     break;
+
+                case MessageType.GameStartTimestampPackage:
+                    // Fwd it to the time keeper if there is one
+                    TimeKeeper.Instance?.OnReceiveGameStartTimestamp(JsonUtility.FromJson<ServerTimestampPackageMessage>(msg.body));
+                    break;
             }
         }
         catch (Exception e)
