@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -11,9 +12,14 @@ public class GameFlowManager : MonoBehaviour
 {
     public static GameFlowManager Instance;
 
+    [Header("Scene Names")]
     public string MainMenuScene;
     public string GameScene;
     public string BetweenGamesScene;
+
+    [Header("Scene Transitions")]
+    public Image fadeImage;
+    public float defaultFadeDuration = 0.2f;
 
     private void Awake()
     {
@@ -25,15 +31,67 @@ public class GameFlowManager : MonoBehaviour
         else DestroyImmediate(gameObject);
     }
 
-    public void LoadMainMenuScene() => SceneManager.LoadScene(MainMenuScene, LoadSceneMode.Single);
+    public void LoadMainMenuScene() => StartCoroutine(FadeAndChangeScene(MainMenuScene));
 
-    public void LoadBetweenGamesScene()
+    public void LoadBetweenGamesScene() => StartCoroutine(FadeAndChangeScene(BetweenGamesScene));
+
+    public void LoadGameScene() => StartCoroutine(FadeAndChangeScene(GameScene));
+
+
+    /// <summary>
+    /// Fades in to black, changes the scene, then fades back out
+    /// </summary>
+    public IEnumerator FadeAndChangeScene(string sceneName, float fadeDuration = defaultFadeDuration)
     {
-        SceneManager.LoadScene(BetweenGamesScene, LoadSceneMode.Single);
+        // Fade to black
+        yield return StartCoroutine(FadeToBlack(fadeDuration));
+        
+        // Actually change the scene
+        SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        
+        // Fade back to clear
+        yield return StartCoroutine(FadeToClear(fadeDuration));
     }
 
-    public void LoadGameScene()
+
+    /// <summary>
+    /// Fades current image overlay screen to black 
+    /// </summary>
+    public IEnumerator FadeToBlack(float fadeDuration)
     {
-        SceneManager.LoadScene(GameScene, LoadSceneMode.Single);
+        float elapsedTime = 0f;
+        
+        Color startColor = fadeImage.color;
+        Color endColor = Color.black;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            fadeImage.color = Color.Lerp(startColor, endColor, elapsedTime / fadeDuration);
+
+            yield return null;
+        }
+    }
+
+
+    /// <summary>
+    /// Fades current image overlay screen to clear 
+    /// </summary>
+    public IEnumerator FadeToClear(float fadeDuration)
+    {
+        float elapsedTime = 0f;
+        
+        Color startColor = fadeImage.color;
+        Color endColor = Color.clear;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            fadeImage.color = Color.Lerp(startColor, endColor, elapsedTime / fadeDuration);
+
+            yield return null;
+        }
     }
 }
