@@ -5,6 +5,7 @@
 -a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/Unity.TextMeshPro.dll"
 -a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/Unity.Services.Core.Networking.dll"
 -a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/Unity.VisualScripting.Flow.dll"
+-a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/Unity.InputSystem.dll"
 -a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/Unity.Services.Core.Internal.dll"
 -a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/UnityEngine.UI.dll"
 -a="/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PlayerScriptAssemblies/Unity.Services.Core.Configuration.dll"

@@ -276,6 +276,9 @@ public class SteamManager : MonoBehaviour
     /// </summary>
     public void RequestGameStartTimestampPackage() => connectionManager.SendMessageToSocketServer(new ServerTimestampRequestMessage().ToGameStartRequestMessage(), SendType.Reliable);
 
+    public void SendPlayerInputSnapshot(PlayerInputSnapshot snapshot) => connectionManager.SendMessageToSocketServer(snapshot.ToMessage(), SendType.Unreliable);
+
+
     #region testing
 
     public void RequestConnections()

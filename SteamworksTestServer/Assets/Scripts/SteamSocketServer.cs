@@ -93,6 +93,12 @@ public class SteamSocketServer : SocketManager
                     SendMessageToClient(connection, BuildServerTimestampPackage().ToGameStartTimestampMessage(), SendType.Reliable);
                     break;
 
+                case MessageType.InputSnapshot:
+                    Console.ServerLog($"Received Input Package from {connection.ConnectionName}");
+
+                    // Send to input buffer in the physics sim world
+                    break;
+
 
                 default:
                     Console.ServerLog($"We got a message from {connection.ConnectionName}!");

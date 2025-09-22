@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using Steamworks;
+using System.Runtime.Serialization;
 
 public enum MessageType
 {
@@ -14,8 +15,8 @@ public enum MessageType
     GameStartTimestampRequest,
     GameStartTimestampPackage,
 
-    InputPackage,
-    Position
+    InputSnapshot,
+    entityWorldData
 }
 
 [Serializable]
@@ -91,7 +92,7 @@ public struct InputPackageMessage
     /// </summary>
     public Message ToMessage()
     {
-        return Message.CreateMessage(MessageType.InputPackage, JsonUtility.ToJson(this));
+        return Message.CreateMessage(MessageType.InputSnapshot, JsonUtility.ToJson(this));
     }
 }
 
@@ -122,5 +123,21 @@ public struct ServerTimestampPackageMessage
     public Message ToGameStartTimestampMessage()
     {
         return Message.CreateMessage(MessageType.GameStartTimestampPackage, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct PlayerInputSnapshot
+{
+    public uint gameTick;
+    public Vector2 moveInput;
+    public Vector2 lookInput;
+    public bool sprintInput;
+    public bool jumpInput;
+    public bool crouchInput;
+
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.InputSnapshot, JsonUtility.ToJson(this));
     }
 }

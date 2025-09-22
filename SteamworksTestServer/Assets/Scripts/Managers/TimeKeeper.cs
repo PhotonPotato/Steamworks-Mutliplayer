@@ -19,7 +19,7 @@ public class TimeKeeper : MonoBehaviour
     
     [SerializeField] private float gameStartTimestamp;
     [SerializeField] private float elapsedGameTime;
-    [SerializeField] private float gameTick;
+    [SerializeField] private uint gameTick;
 
     public float timeBetweenHeatbeats = 3;
     private DateTime clientTimeOfLastEst;
@@ -28,6 +28,8 @@ public class TimeKeeper : MonoBehaviour
 
     [Header("Refs")]
     public TMP_Text timeClockText;
+
+    public TMP_Text debugGameTickText;
 
     private void Awake()
     {
@@ -52,6 +54,7 @@ public class TimeKeeper : MonoBehaviour
         clientTime.AddSeconds(Time.deltaTime);
         //serverTime.AddSeconds(Time.deltaTime);
         elapsedGameTime += Time.deltaTime;
+        gameTick = (uint) Mathf.Floor(elapsedGameTime / TPS);
 
         // Try to rehone the clients time every so often
         if (Time.time - timeOflastHeartbeat > timeBetweenHeatbeats)
@@ -67,6 +70,8 @@ public class TimeKeeper : MonoBehaviour
         // Update the time clock
         TimeSpan time = TimeSpan.FromSeconds(elapsedGameTime);
         timeClockText.text = time.ToString(@"mm\:ss\:ff");
+
+        debugGameTickText.text = $"Tick: {gameTick}";
     }
 
     /// <summary>
@@ -119,4 +124,6 @@ public class TimeKeeper : MonoBehaviour
             return client.GetNetworkTime();
         }
     }
+
+    public uint GetGameTick() => gameTick;
 }

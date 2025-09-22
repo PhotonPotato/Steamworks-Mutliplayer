@@ -100,7 +100,7 @@
 -define:ENABLE_TERRAIN
 -define:ENABLE_TILEMAP
 -define:ENABLE_TIMELINE
--define:ENABLE_LEGACY_INPUT_MANAGER
+-define:ENABLE_INPUT_SYSTEM
 -define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
 -define:CSHARP_7_OR_LATER
 -define:CSHARP_7_3_OR_NEWER
@@ -296,6 +296,7 @@
 -r:"/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PackageCache/com.unity.nuget.newtonsoft-json@3.0.2/Runtime/AOT/Newtonsoft.Json.dll"
 -r:"/Users/tyhagan/Documents/GitHub/SteamworksTesting/SteamworksTestServer/Library/PackageCache/com.unity.visualscripting@1.7.8/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
 -r:"Assets/Plugins/Unity/Facepunch.Steamworks.Posix.dll"
+-r:"Library/Bee/artifacts/200b0aP.dag/Unity.InputSystem.ref.dll"
 -r:"Library/Bee/artifacts/200b0aP.dag/Unity.Services.Core.Analytics.ref.dll"
 -r:"Library/Bee/artifacts/200b0aP.dag/Unity.Services.Core.Environments.ref.dll"
 -r:"Library/Bee/artifacts/200b0aP.dag/Unity.Services.Core.ref.dll"
@@ -318,6 +319,11 @@
 "Assets/Scripts/Managers/SteamServerConnectionManager.cs"
 "Assets/Scripts/Managers/TimeKeeper.cs"
 "Assets/Scripts/MessageFormats/MessageTypes.cs"
+"Assets/Scripts/Player/GameConstants.cs"
+"Assets/Scripts/Player/InputSystemFirstPersonControls.cs"
+"Assets/Scripts/Player/PlayerCharacterController.cs"
+"Assets/Scripts/Player/PlayerInputHandler.cs"
+"Assets/Scripts/Player/PlayerManager.cs"
 "Assets/Scripts/SteamImageExtensions.cs"
 "Assets/Scripts/SteamSocketServer.cs"
 -langversion:9.0
