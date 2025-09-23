@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerSpawnManager : MonoBehaviour
 {
@@ -22,6 +23,16 @@ public class PlayerSpawnManager : MonoBehaviour
         for (int i = 0; i < count; i++)
         {
             players[i] = Instantiate(PlayerPrefab);
+
+            // Turn off all client components, effectively making it a zombie
+            if (i != 0)
+            {
+                players[i].GetComponent<PlayerManager>().enabled = false;
+                players[i].GetComponent<PlayerCharacterController>().enabled = false;
+                players[i].GetComponent<CharacterController>().enabled = false;
+                players[i].GetComponent<PlayerInput>().enabled = false;
+                players[i].GetComponent<PlayerInputHandler>().enabled = false;
+            }
         }
 
         Log($"Spawned {count} player(s).");

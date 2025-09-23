@@ -1,10 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+
+    public PhysicsScene currentGameScene;
+
+    public PlayerManager thisPlayerManager;
 
     public GameObject[] playerObjects { get; private set; }
 
@@ -18,6 +23,14 @@ public class GameManager : MonoBehaviour
     {
         Log("Spawning players.");
         playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length);
+
+        // Try to get player manager
+        thisPlayerManager = playerObjects[0].GetComponent<PlayerManager>();
+        if (thisPlayerManager == null) Log("Missing player manager");
+
+
+        // Update the current client scene
+        currentGameScene = SceneManager.GetActiveScene().GetPhysicsScene();
     }
 
     /// <summary>
@@ -26,4 +39,8 @@ public class GameManager : MonoBehaviour
     /// <param name="msg">Message to log.</param>
     public static void Log(object msg) { Debug.Log(msg); Console.Log(msg); }
 
+
+    public void RunPlayerFixedUpdate() => thisPlayerManager?.RunClientFixedUpdate();
+
+    public void RunClientPhysics() => currentGameScene.Simulate(TimeKeeper.Instance.TickSpeed);
 }

@@ -87,7 +87,7 @@ public class SteamServerConnectionManager : ConnectionManager
     /// <summary>
     /// Attempts to send a message of bytes to the connected socket server.
     /// </summary>
-    /// <param name="msg"></param>
+    /// <param name="message"></param>
     /// <param name="sendType"></param>
     /// <param name="tryOnce"></param>
     /// <param name="logSend"></param>

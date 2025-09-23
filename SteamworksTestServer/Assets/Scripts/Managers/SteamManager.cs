@@ -87,7 +87,7 @@ public class SteamManager : MonoBehaviour
     }
 
 
-    private void Update()
+    public void PostPhysUpdate()
     {
         SteamClient.RunCallbacks();
 

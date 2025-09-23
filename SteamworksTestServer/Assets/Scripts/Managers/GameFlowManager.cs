@@ -12,14 +12,17 @@ public class GameFlowManager : MonoBehaviour
 {
     public static GameFlowManager Instance;
 
+    public Scene curScene;
+
     [Header("Scene Names")]
     public string MainMenuScene;
     public string GameScene;
     public string BetweenGamesScene;
 
     [Header("Scene Transitions")]
+    public Canvas TransitionCanvas;
     public Image fadeImage;
-    public float defaultFadeDuration = 0.2f;
+    public const float defaultFadeDuration = 0.2f;
 
     private void Awake()
     {
@@ -27,6 +30,7 @@ public class GameFlowManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this);
+            DontDestroyOnLoad(TransitionCanvas.gameObject);
         }
         else DestroyImmediate(gameObject);
     }
@@ -48,7 +52,8 @@ public class GameFlowManager : MonoBehaviour
         
         // Actually change the scene
         SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
-        
+        curScene = SceneManager.GetActiveScene();
+
         // Fade back to clear
         yield return StartCoroutine(FadeToClear(fadeDuration));
     }
@@ -93,5 +98,32 @@ public class GameFlowManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+
+    private void FixedUpdate()
+    {
+        // Manually call the pre-physics fixed update of the other  child managers
+
+        // PRE-PHYSICS TICK
+        GameManager.Instance?.RunPlayerFixedUpdate();
+
+        // RUN PHYSICS
+
+        // IN GAME
+        if (curScene.name == GameScene)
+        {
+            // Client
+            GameManager.Instance?.RunClientPhysics();
+
+            // Server
+
+        }
+
+        // POST-PYSICS TICK
+
+
+        // UPDATE
+        SteamManager.Instance?.PostPhysUpdate();
     }
 }

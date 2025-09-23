@@ -15,7 +15,8 @@ public class TimeKeeper : MonoBehaviour
     private DateTime gameStartTime;
 
     [Header("Settings")]
-    public float TPS = .02f;
+    public const int TPS = 60;
+    public float TickSpeed { get; private set; } = 1 / (float) TPS;
     
     [SerializeField] private float gameStartTimestamp;
     [SerializeField] private float elapsedGameTime;
@@ -54,7 +55,7 @@ public class TimeKeeper : MonoBehaviour
         clientTime.AddSeconds(Time.deltaTime);
         //serverTime.AddSeconds(Time.deltaTime);
         elapsedGameTime += Time.deltaTime;
-        gameTick = (uint) Mathf.Floor(elapsedGameTime / TPS);
+        gameTick = (uint) Mathf.Floor(elapsedGameTime / TickSpeed);
 
         // Try to rehone the clients time every so often
         if (Time.time - timeOflastHeartbeat > timeBetweenHeatbeats)
