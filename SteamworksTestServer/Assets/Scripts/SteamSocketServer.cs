@@ -14,6 +14,8 @@ public class SteamSocketServer : SocketManager
 
     DateTime lastServerTime;
 
+    public int playerCount => connectedPlayers.Count;
+
     public override void OnConnecting(Connection connection, ConnectionInfo data)
     {
         base.OnConnecting(connection, data);
@@ -94,11 +96,22 @@ public class SteamSocketServer : SocketManager
                     break;
 
                 case MessageType.InputSnapshot:
-                    Console.ServerLog($"Received Input Package from {connection.ConnectionName}");
-
                     // Send to input buffer in the physics sim world
+                    PlayerInputSnapshot snapshot = JsonUtility.FromJson<PlayerInputSnapshot>(msg.body);
+
+                    Console.ServerLog($"Received Input Package from {connection.ConnectionName}. Input tick: {snapshot.gameTick}");
+
+                    ServerInputManager.Instance.AddInputFrame(0, snapshot);
                     break;
 
+                case MessageType.InputSnapshotBundle:
+                    // Send to input buffer in the physics sim world
+                    PlayerInputSnapshotBundle bundle = JsonUtility.FromJson<PlayerInputSnapshotBundle>(msg.body);
+
+                    Console.ServerLog($"Received Input Package from {connection.ConnectionName}.");
+
+                    ServerInputManager.Instance.ProcessInputSnapshotBundle(0, bundle);
+                    break;
 
                 default:
                     Console.ServerLog($"We got a message from {connection.ConnectionName}!");

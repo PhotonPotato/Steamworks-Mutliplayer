@@ -42,6 +42,11 @@ public sealed class Console : MonoBehaviour
         if (Instance == null) return;
 
         Instance.ConsoleText.text += $"\n<color=#459c2d>{Mathf.Round(Time.time * 100) / 100}</color>:\t{message}";
+
+        if (Instance.ConsoleText.text.Length > 2048)
+        {
+            Instance.ConsoleText.text = Instance.ConsoleText.text.Substring(Instance.ConsoleText.text.Length - 2048);
+        }
     }
 
     /// <summary>
@@ -53,6 +58,11 @@ public sealed class Console : MonoBehaviour
         if (Instance == null) return;
 
         Instance.ConsoleText.text += $"\n<color=#459c2d>{Mathf.Round(Time.time * 100) / 100}</color>:\t<b><color=#7851a9>[SERVER]</color></b> {message}";
+
+        if (Instance.ConsoleText.text.Length > 2048)
+        {
+            Instance.ConsoleText.text = Instance.ConsoleText.text.Substring(Instance.ConsoleText.text.Length - 2048);
+        }
     }
 
 

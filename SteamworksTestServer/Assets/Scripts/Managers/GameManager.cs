@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Log("Spawning players.");
-        playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length);
+        playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length, currentGameScene);
 
         // Try to get player manager
         thisPlayerManager = playerObjects[0].GetComponent<PlayerManager>();
@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
 
         // Update the current client scene
-        currentGameScene = SceneManager.GetActiveScene().GetPhysicsScene();
+        currentGameScene = SceneManager.GetSceneByName(GameFlowManager.Instance.GameScene).GetPhysicsScene();
     }
 
     /// <summary>

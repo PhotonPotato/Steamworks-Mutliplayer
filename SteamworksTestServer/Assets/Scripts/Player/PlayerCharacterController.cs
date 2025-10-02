@@ -11,6 +11,8 @@ public class PlayerCharacterController : MonoBehaviour
     [NonSerialized] public InputSystemFirstPersonControls inputActions;
     //[NonSerialized] public WeaponController m_weaponController;
 
+    public PhysicsScene ThisPhysicsScene;
+
     private CharacterController controller;
 
     [SerializeField] public Camera cam;
@@ -34,7 +36,7 @@ public class PlayerCharacterController : MonoBehaviour
     private float xRotation = 0f;
     private Vector3 m_LatestImpactSpeed;
 
-    // Movement Vars
+    [Header("Movement Vars")]
     public Vector3 CharacterVelocity;
     public float gravity = -9.81f;
     private bool isGrounded;
@@ -182,7 +184,7 @@ public class PlayerCharacterController : MonoBehaviour
     {
         HasPressedJumpThisFrame = false;
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, LayerMask.GetMask("Ground")) || controller.isGrounded;
+        isGrounded = ThisPhysicsScene.Raycast(transform.position, Vector3.down, 1.1f, LayerMask.GetMask("Ground")) || controller.isGrounded;
 
         isSprinting = GetPlayerSprintInput();
 
@@ -275,7 +277,7 @@ public class PlayerCharacterController : MonoBehaviour
 
         // detect obstructions to adjust velocity accordingly
         m_LatestImpactSpeed = Vector3.zero;
-        if (Physics.CapsuleCast(capsuleBottomBeforeMove, capsuleTopBeforeMove, controller.radius,
+        if (ThisPhysicsScene.CapsuleCast(capsuleBottomBeforeMove, capsuleTopBeforeMove, controller.radius,
             CharacterVelocity.normalized, out RaycastHit hit, CharacterVelocity.magnitude * Time.fixedDeltaTime, -1,
             QueryTriggerInteraction.Ignore))
         {
@@ -312,7 +314,7 @@ public class PlayerCharacterController : MonoBehaviour
         }
         else
         {
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), 2.0f, -1))
+            if (ThisPhysicsScene.Raycast(transform.position, transform.TransformDirection(Vector3.up), 2.0f, -1))
             {
                 controller.height = crouchHeight;
             }

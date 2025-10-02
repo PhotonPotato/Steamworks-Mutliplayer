@@ -4058,7 +4058,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Hallowell
+  m_text: '[Game Title]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5bb915be689c741a28b09c7c78f38ce0, type: 2}
   m_sharedMaterial: {fileID: -4669004611722190298, guid: 5bb915be689c741a28b09c7c78f38ce0, type: 2}
@@ -5388,6 +5388,7 @@ MonoBehaviour:
   MainMenuScene: Main
   GameScene: Game
   BetweenGamesScene: BetweenGames
+  ServerScene: ServerWorld
   TransitionCanvas: {fileID: 272378409}
   fadeImage: {fileID: 1907398676}
 --- !u!1 &1824277081

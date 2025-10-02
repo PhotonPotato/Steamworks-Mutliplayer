@@ -20,7 +20,7 @@ public class TimeKeeper : MonoBehaviour
     
     [SerializeField] private float gameStartTimestamp;
     [SerializeField] private float elapsedGameTime;
-    [SerializeField] private uint gameTick;
+    [SerializeField] public uint gameTick { get; private set; }
 
     public float timeBetweenHeatbeats = 3;
     private DateTime clientTimeOfLastEst;
@@ -60,12 +60,7 @@ public class TimeKeeper : MonoBehaviour
         // Try to rehone the clients time every so often
         if (Time.time - timeOflastHeartbeat > timeBetweenHeatbeats)
         {
-            clientTime = GetNetworkTime();
-
-            // Rehone elapsed time while we're at it
-            elapsedGameTime = (float) (clientTime - gameStartTime).TotalSeconds;
-
-            timeOflastHeartbeat = Time.time;
+            ForceClientHeartbeat();
         }
 
         // Update the time clock
@@ -96,9 +91,7 @@ public class TimeKeeper : MonoBehaviour
     /// <param name="pckg"></param>
     public void OnReceiveServerTimestamp(ServerTimestampPackageMessage pckg)
     {
-        clientTime = GetNetworkTime();
-        //clientTimeOfLastEst = clientTime;
-        timeOflastHeartbeat = Time.time;
+        ForceClientHeartbeat();
 
         DateTime serverSendTime = DateTime.Parse(pckg.timeData, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
@@ -113,6 +106,8 @@ public class TimeKeeper : MonoBehaviour
         gameStartTime = DateTime.Parse(pckg.timeData, null, System.Globalization.DateTimeStyles.RoundtripKind);
 
         Log("Game start time updated  to " + gameStartTime);
+
+        ForceClientHeartbeat();
     }
 
     /// <summary>
@@ -127,4 +122,14 @@ public class TimeKeeper : MonoBehaviour
     }
 
     public uint GetGameTick() => gameTick;
+
+    private void ForceClientHeartbeat()
+    {
+        clientTime = GetNetworkTime();
+
+        // Rehone elapsed time while we're at it
+        elapsedGameTime = (float)(clientTime - gameStartTime).TotalSeconds;
+
+        timeOflastHeartbeat = Time.time;
+    }
 }

@@ -16,6 +16,7 @@ public enum MessageType
     GameStartTimestampPackage,
 
     InputSnapshot,
+    InputSnapshotBundle,
     entityWorldData
 }
 
@@ -139,5 +140,16 @@ public struct PlayerInputSnapshot
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.InputSnapshot, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct PlayerInputSnapshotBundle
+{
+    public PlayerInputSnapshot[] snapshots;
+
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.InputSnapshotBundle, JsonUtility.ToJson(this));
     }
 }

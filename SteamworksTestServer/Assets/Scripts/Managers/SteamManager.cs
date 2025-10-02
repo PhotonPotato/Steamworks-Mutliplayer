@@ -278,6 +278,8 @@ public class SteamManager : MonoBehaviour
 
     public void SendPlayerInputSnapshot(PlayerInputSnapshot snapshot) => connectionManager.SendMessageToSocketServer(snapshot.ToMessage(), SendType.Unreliable);
 
+    public void SendPlayerInputSnapshotBundle(PlayerInputSnapshotBundle snapshotBundle) => connectionManager.SendMessageToSocketServer(snapshotBundle.ToMessage(), SendType.Unreliable);
+
 
     #region testing
 

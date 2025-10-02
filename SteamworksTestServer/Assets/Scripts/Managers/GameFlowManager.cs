@@ -18,6 +18,7 @@ public class GameFlowManager : MonoBehaviour
     public string MainMenuScene;
     public string GameScene;
     public string BetweenGamesScene;
+    public string ServerScene;
 
     [Header("Scene Transitions")]
     public Canvas TransitionCanvas;
@@ -39,8 +40,14 @@ public class GameFlowManager : MonoBehaviour
 
     public void LoadBetweenGamesScene() => StartCoroutine(FadeAndChangeScene(BetweenGamesScene));
 
-    public void LoadGameScene() => StartCoroutine(FadeAndChangeScene(GameScene));
+    public void LoadGameScene()
+    {
+        // Turn off auto updating physics
+        Physics.autoSimulation = false;
+        Physics.autoSyncTransforms = false;
 
+        StartCoroutine(FadeAndChangeScene(GameScene));
+    }
 
     /// <summary>
     /// Fades in to black, changes the scene, then fades back out
@@ -53,6 +60,17 @@ public class GameFlowManager : MonoBehaviour
         // Actually change the scene
         SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
         curScene = SceneManager.GetActiveScene();
+
+        // TODO: Actually want some of the game scene load logic IN the coroutine
+        // ugly, change later
+        if (sceneName == GameScene)
+        {
+            // Boot up a physics scene as for the server if we are the host
+            if (SteamManager.Instance.isHost)
+            {
+                SceneManager.LoadScene(ServerScene, new LoadSceneParameters(LoadSceneMode.Additive, LocalPhysicsMode.Physics3D));
+            }
+        }
 
         // Fade back to clear
         yield return StartCoroutine(FadeToClear(fadeDuration));
@@ -107,6 +125,7 @@ public class GameFlowManager : MonoBehaviour
 
         // PRE-PHYSICS TICK
         GameManager.Instance?.RunPlayerFixedUpdate();
+        ServerWorldManager.Instance?.RunServerPrePhysicsTick();
 
         // RUN PHYSICS
 
@@ -117,7 +136,7 @@ public class GameFlowManager : MonoBehaviour
             GameManager.Instance?.RunClientPhysics();
 
             // Server
-
+            ServerWorldManager.Instance?.RunServerWorldPhysicsTick();
         }
 
         // POST-PYSICS TICK

@@ -16,7 +16,7 @@ public class PlayerSpawnManager : MonoBehaviour
         else DestroyImmediate(gameObject);
     }
 
-    public GameObject[] SpawnAllPlayers(int count)
+    public GameObject[] SpawnAllPlayers(int count, PhysicsScene physicsScene)
     {
         GameObject[] players = new GameObject[count];
 
@@ -29,9 +29,12 @@ public class PlayerSpawnManager : MonoBehaviour
             {
                 players[i].GetComponent<PlayerManager>().enabled = false;
                 players[i].GetComponent<PlayerCharacterController>().enabled = false;
+                players[i].GetComponent<PlayerCharacterController>().ThisPhysicsScene = physicsScene;
                 players[i].GetComponent<CharacterController>().enabled = false;
                 players[i].GetComponent<PlayerInput>().enabled = false;
                 players[i].GetComponent<PlayerInputHandler>().enabled = false;
+
+                players[i].GetComponentInChildren<Camera>().enabled = false;
             }
         }
 
