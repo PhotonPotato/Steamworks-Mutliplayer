@@ -63,6 +63,8 @@ public class ServerInputManager : MonoBehaviour
         for (int i = 0; i < bundle.snapshots.Length; i++)
         {
             playerInputBuffers[playerIndex].buffer[bundle.snapshots[i].gameTick] = bundle.snapshots[i];
+
+            InputLossMonnitor.Instance?.AddServerInputSnapshot(bundle.snapshots[i]);
         }
     }
 

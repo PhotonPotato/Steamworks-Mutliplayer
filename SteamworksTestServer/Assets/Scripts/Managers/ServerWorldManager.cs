@@ -18,7 +18,7 @@ public class ServerWorldManager : MonoBehaviour
     public PlayerManager[] playerManagers;
 
     // Running the server 30 ticks behind
-    public uint gameTick { get; private set; } = (TimeKeeper.Instance?.gameTick ?? 30) - 30;
+    public uint gameTick { get; private set; } = (TimeKeeper.Instance?.gameTick ?? 6) - 6;
 
     private void Awake()
     {
@@ -41,9 +41,9 @@ public class ServerWorldManager : MonoBehaviour
 
     public void RunServerPrePhysicsTick()
     {
-        gameTick = (TimeKeeper.Instance?.gameTick ?? 30) - 30;
+        gameTick = (TimeKeeper.Instance?.gameTick ?? 6) - 6;
 
-        Console.ServerLog("Running next input frame. Sim tick num " + gameTick);
+        //Console.ServerLog("Running next input frame. Sim tick num " + gameTick);
         ServerInputManager.Instance.RunNextInputFrame();
     }
 
@@ -53,6 +53,11 @@ public class ServerWorldManager : MonoBehaviour
     public void RunServerWorldPhysicsTick()
     {
         if (TimeKeeper.Instance != null) curPhysScene.Simulate(TimeKeeper.Instance.TickSpeed);
+    }
+
+    public void RunServerPostPhysicsTick()
+    {
+        SendBackPlayerPhysicsStates();
     }
 
     /// <summary>
@@ -75,6 +80,19 @@ public class ServerWorldManager : MonoBehaviour
             playerManagers[i].GetComponent<PlayerInput>().enabled = false;
             playerManagers[i].GetComponent<PlayerCharacterController>().enabled = true;
             playerManagers[i].GetComponent<PlayerCharacterController>().ThisPhysicsScene = curPhysScene;
+        }
+    }
+
+    public void SendBackPlayerPhysicsStates()
+    {
+        for (int i = 0; i < playerManagers.Length; i++)
+        {
+            socketServer.SendPlayerPhysicsState(0, new()
+            {
+                position = playerManagers[i].transform.position,
+                velocity = playerManagers[i].CharacterController.CharacterVelocity,
+                look = playerManagers[i].transform.rotation
+            });
         }
     }
 }

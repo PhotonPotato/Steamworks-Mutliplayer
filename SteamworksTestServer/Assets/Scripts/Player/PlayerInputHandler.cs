@@ -32,7 +32,7 @@ public class PlayerInputHandler : MonoBehaviour
             gameTick = TimeKeeper.Instance?.GetGameTick() ?? 0,
             moveInput = m_MoveInput.ReadValue<Vector2>(),
             lookInput = m_LookInput.ReadValue<Vector2>(),
-            sprintInput = m_SprintInput.ReadValue<bool>(),
+            sprintInput = m_SprintInput.ReadValue<float>() == 1,
             jumpInput = m_JumpInput.ReadValue<float>() > 0,
             crouchInput = m_CrouchInput.ReadValue<float>() > 0
         };

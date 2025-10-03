@@ -76,6 +76,11 @@ public class SteamServerConnectionManager : ConnectionManager
                     // Fwd it to the time keeper if there is one
                     TimeKeeper.Instance?.OnReceiveGameStartTimestamp(JsonUtility.FromJson<ServerTimestampPackageMessage>(msg.body));
                     break;
+
+                case MessageType.PlayerPhysicsState:
+                    // Send it to the client correction manager
+                    ClientCorrectionManager.Instance?.SetPlayerToState(JsonUtility.FromJson<PlayerPhysicsStateMessage>(msg.body));
+                    break;
             }
         }
         catch (Exception e)
@@ -120,8 +125,8 @@ public class SteamServerConnectionManager : ConnectionManager
             
             if (logSend)
             {
-                if (result == Result.OK)
-                    Log($"Message send(s) success. Sent {byteCount} byte(s)!");
+                if (result == Result.OK) ;
+                //Log($"Message send(s) success. Sent {byteCount} byte(s)!");
                 else
                     Log($"Message send(s) failed. Send result: {result}");
             }

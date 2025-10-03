@@ -118,9 +118,18 @@ public class GameFlowManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (UnityEngine.InputSystem.Keyboard.current.pKey.wasPressedThisFrame)
+        {
+            if (Console.Instance?.gameObject.activeSelf ?? false) Console.Instance?.OnCloseConsole();
+            else Console.Instance?.OnOpenConsole();
+        }
+    }
 
     private void FixedUpdate()
-    {
+    { 
+        
         // Manually call the pre-physics fixed update of the other  child managers
 
         // PRE-PHYSICS TICK
@@ -140,7 +149,7 @@ public class GameFlowManager : MonoBehaviour
         }
 
         // POST-PYSICS TICK
-
+        ServerWorldManager.Instance?.RunServerPostPhysicsTick();
 
         // UPDATE
         SteamManager.Instance?.PostPhysUpdate();

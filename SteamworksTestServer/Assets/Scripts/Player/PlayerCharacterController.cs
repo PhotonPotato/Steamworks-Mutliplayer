@@ -149,9 +149,6 @@ public class PlayerCharacterController : MonoBehaviour
     {
         currentInputState = snapshot;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
         DoMovement();
         DoLooking();
         DoZoom();

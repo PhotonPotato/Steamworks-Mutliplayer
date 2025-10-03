@@ -108,7 +108,7 @@ public class SteamSocketServer : SocketManager
                     // Send to input buffer in the physics sim world
                     PlayerInputSnapshotBundle bundle = JsonUtility.FromJson<PlayerInputSnapshotBundle>(msg.body);
 
-                    Console.ServerLog($"Received Input Package from {connection.ConnectionName}.");
+                    //Console.ServerLog($"Received Input Package from {connection.ConnectionName}.");
 
                     ServerInputManager.Instance.ProcessInputSnapshotBundle(0, bundle);
                     break;
@@ -235,6 +235,19 @@ public class SteamSocketServer : SocketManager
             // Apparently "o" is the flag for a round trip format, not sure y thats important
             timeData = lastServerTime.ToString("o")
         };
+    }
+
+    // HIGH CODING HEADS UP
+    public void SendPlayerPhysicsState(int playerIndex, PlayerPhysicsStateMessage state)
+    {
+        foreach (var connection in Connected)
+        {
+            if (connection.ConnectionName == connectedPlayers[playerIndex].Name)
+            {
+                Debug.Log("found player");
+                SendMessageToClient(connection, state.ToMessage(), SendType.Unreliable);
+            }
+        }
     }
 }
 

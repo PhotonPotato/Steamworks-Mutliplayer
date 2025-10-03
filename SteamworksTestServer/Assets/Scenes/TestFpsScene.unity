@@ -325,6 +325,10 @@ PrefabInstance:
       propertyPath: IS_IN_TEST_SCENE
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1766672564047300589, guid: 4911fae0d171b4c1b87d56f71c5f53b1, type: 3}
+      propertyPath: SEND_INPUT_SNAPSHOTS_TO_MONITOR
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5620793081413533436, guid: 4911fae0d171b4c1b87d56f71c5f53b1, type: 3}
       propertyPath: m_Name
       value: PlayerPrefab

@@ -17,6 +17,7 @@ public enum MessageType
 
     InputSnapshot,
     InputSnapshotBundle,
+    PlayerPhysicsState,
     entityWorldData
 }
 
@@ -151,5 +152,18 @@ public struct PlayerInputSnapshotBundle
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.InputSnapshotBundle, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct PlayerPhysicsStateMessage
+{
+    public Vector3 position;
+    public Vector3 velocity;
+    public Quaternion look;
+
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.PlayerPhysicsState, JsonUtility.ToJson(this));
     }
 }

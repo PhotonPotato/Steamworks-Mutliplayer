@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    [Header("Debug Flags")]
     public bool IS_IN_TEST_SCENE = false;
+    public bool SEND_INPUT_SNAPSHOTS_TO_MONITOR = true;
 
     private PlayerInputHandler InputHandler;
-    private PlayerCharacterController CharacterController;
+    public PlayerCharacterController CharacterController { get; private set; }
 
     private PlayerInputSnapshot currentInputSnapshot;
 
@@ -27,8 +29,13 @@ public class PlayerManager : MonoBehaviour
 
     public void RunClientFixedUpdate()
     {
+        Cursor.lockState = (Console.Instance?.open?? false) ? CursorLockMode.Confined : CursorLockMode.Locked;
+        Cursor.visible = Console.Instance?.open ?? false;
+
         // Get new input, save it
         currentInputSnapshot = InputHandler.GeneratePlayerInputSnapshot();
+
+        if (SEND_INPUT_SNAPSHOTS_TO_MONITOR) InputLossMonnitor.Instance?.AddClientInputSnapshot(currentInputSnapshot);
 
         // Update the input log
         previousInputsLog.Enqueue(currentInputSnapshot);
