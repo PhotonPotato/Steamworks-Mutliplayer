@@ -18,7 +18,10 @@ public class ServerWorldManager : MonoBehaviour
     public PlayerManager[] playerManagers;
 
     // Running the server 30 ticks behind
-    public uint gameTick { get; private set; } = (TimeKeeper.Instance?.gameTick ?? 6) - 6;
+    public uint gameTick { get; private set; } = (TimeKeeper.Instance?.gameTick ?? ServerTickDelay) - ServerTickDelay;
+
+    [Header("Settings")]
+    public const int ServerTickDelay = 6;
 
     private void Awake()
     {
@@ -41,7 +44,7 @@ public class ServerWorldManager : MonoBehaviour
 
     public void RunServerPrePhysicsTick()
     {
-        gameTick = (TimeKeeper.Instance?.gameTick ?? 6) - 6;
+        gameTick = (TimeKeeper.Instance?.gameTick ?? ServerTickDelay) - ServerTickDelay;
 
         //Console.ServerLog("Running next input frame. Sim tick num " + gameTick);
         ServerInputManager.Instance.RunNextInputFrame();
@@ -69,9 +72,7 @@ public class ServerWorldManager : MonoBehaviour
 
         for (int i = 0; i < socketServer.playerCount; i++)
         {
-            Debug.Log("i: " + i);
             playerManagers[i] = Instantiate(PlayerPrefab, PlayersParent).GetComponent<PlayerManager>();
-            Debug.Log(" post i: " + i);
 
             // Immediately turn off the players' cameras
             playerManagers[i].GetComponentInChildren<Camera>().enabled = false;
@@ -80,6 +81,8 @@ public class ServerWorldManager : MonoBehaviour
             playerManagers[i].GetComponent<PlayerInput>().enabled = false;
             playerManagers[i].GetComponent<PlayerCharacterController>().enabled = true;
             playerManagers[i].GetComponent<PlayerCharacterController>().ThisPhysicsScene = curPhysScene;
+
+            playerManagers[i].gameObject.layer = 7;
         }
     }
 
@@ -89,6 +92,8 @@ public class ServerWorldManager : MonoBehaviour
         {
             socketServer.SendPlayerPhysicsState(0, new()
             {
+                gameTick = gameTick,
+
                 position = playerManagers[i].transform.position,
                 velocity = playerManagers[i].CharacterController.CharacterVelocity,
                 look = playerManagers[i].transform.rotation

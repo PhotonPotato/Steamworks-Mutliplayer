@@ -79,7 +79,7 @@ public class SteamServerConnectionManager : ConnectionManager
 
                 case MessageType.PlayerPhysicsState:
                     // Send it to the client correction manager
-                    ClientCorrectionManager.Instance?.SetPlayerToState(JsonUtility.FromJson<PlayerPhysicsStateMessage>(msg.body));
+                    ClientCorrectionManager.Instance?.OnReceivedNewPlayerStateFromServer(JsonUtility.FromJson<PlayerPhysicsStateMessage>(msg.body));
                     break;
             }
         }

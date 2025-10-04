@@ -857,7 +857,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   controller: {fileID: 0}
-  maximumError: 0.1
+  maximumError: 0.3
+  previousPhysicsStatesLog: []
 --- !u!1 &729983354
 GameObject:
   m_ObjectHideFlags: 0

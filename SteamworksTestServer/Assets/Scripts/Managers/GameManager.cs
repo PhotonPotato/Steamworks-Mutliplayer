@@ -40,7 +40,11 @@ public class GameManager : MonoBehaviour
     public static void Log(object msg) { Debug.Log(msg); Console.Log(msg); }
 
 
-    public void RunPlayerFixedUpdate() => thisPlayerManager?.RunClientFixedUpdate();
+    public void RunPlayerFixedUpdate()
+    {
+        thisPlayerManager?.RunClientFixedUpdate();
+        ClientCorrectionManager.Instance?.RunFixedUpdate();
+    }
 
     public void RunClientPhysics() => currentGameScene.Simulate(TimeKeeper.Instance.TickSpeed);
 }

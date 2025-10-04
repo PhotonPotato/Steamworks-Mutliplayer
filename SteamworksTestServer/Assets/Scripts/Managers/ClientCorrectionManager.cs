@@ -8,14 +8,34 @@ public class ClientCorrectionManager : MonoBehaviour
 
     [Header("Refs")]
     public PlayerCharacterController controller;
-
+    
     [Header("Settings")]
     public float maximumError = .1f;
+
+    [Header("Trackers")]
+    public List<PlayerPhysicsStateMessage> previousPhysicsStatesLog = new List<PlayerPhysicsStateMessage>();
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else DestroyImmediate(this);
+    }
+
+    public void RunFixedUpdate()
+    {
+        // Throw a new fram of player position in the log
+        previousPhysicsStatesLog.Add(new()
+        {
+            gameTick = TimeKeeper.Instance?.gameTick ?? 0,
+
+            position = transform.position,
+            velocity = controller.CharacterVelocity,
+            look = transform.rotation
+        });
+
+        // Check if the log is too long
+        if (previousPhysicsStatesLog.Count > GameManager.Instance?.thisPlayerManager.InputLogLength)
+            previousPhysicsStatesLog.RemoveAt(0);
     }
 
     private void Start()
@@ -26,6 +46,51 @@ public class ClientCorrectionManager : MonoBehaviour
     private void UpdatePlayerCharacterController()
     {
         controller = GameManager.Instance?.thisPlayerManager.CharacterController;
+    }
+
+    /// <summary>
+    /// We want this to:
+    /// - compare the received state with the corresponding physics
+    ///   state we have saved in the log.
+    ///  - If the discrepancy is too high, reset it and
+    ///    call for a physics rerun.
+    /// </summary>
+    /// <param name="state"> The new physics state from the server </param>
+    public void OnReceivedNewPlayerStateFromServer(PlayerPhysicsStateMessage state)
+    {
+        if (controller == null) UpdatePlayerCharacterController();
+
+        Console.Log("Received new state from server");
+
+        PlayerPhysicsStateMessage loggedState = previousPhysicsStatesLog.Find(f => f.gameTick == state.gameTick);
+
+        // If it equals an empty player physics state
+        if (loggedState.Equals(new PlayerPhysicsStateMessage()))
+        {
+            // Then ignore this frame
+            Debug.Log("State tick not found");
+            return;
+        }
+        else
+        {
+            // Run comparison
+            float err = state.CompareTo(loggedState);
+            Debug.Log("prediction error " + err);
+            Debug.Log($"Frame difference {TimeKeeper.Instance.gameTick - state.gameTick}. Server: {state.gameTick}. Cur frame: {TimeKeeper.Instance.gameTick}");
+
+            if (err >= maximumError)
+            {
+                // Reset player state to how it should be
+                SetPlayerToState(state);
+
+                Debug.Log(state.position);
+
+                Physics.SyncTransforms();
+
+                // Rerun player physics from there on back to current
+                GameManager.Instance?.thisPlayerManager.ForceRunFramesOfClientInputFromFrame(state.gameTick);
+            }
+        }
     }
 
     public void SetPlayerToState(PlayerPhysicsStateMessage state)

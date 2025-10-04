@@ -244,7 +244,7 @@ public class SteamSocketServer : SocketManager
         {
             if (connection.ConnectionName == connectedPlayers[playerIndex].Name)
             {
-                Debug.Log("found player");
+                state.ConvertToClientWorldSpace();
                 SendMessageToClient(connection, state.ToMessage(), SendType.Unreliable);
             }
         }

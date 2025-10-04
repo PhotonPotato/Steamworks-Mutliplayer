@@ -37,11 +37,13 @@ public class PlayerManager : MonoBehaviour
 
         if (SEND_INPUT_SNAPSHOTS_TO_MONITOR) InputLossMonnitor.Instance?.AddClientInputSnapshot(currentInputSnapshot);
 
-        // Update the input log
+        // Update the input log and player position log
         previousInputsLog.Enqueue(currentInputSnapshot);
 
         if (previousInputsLog.Count > InputLogLength)
+        {
             previousInputsLog.Dequeue();
+        }
 
         // Run CharacterController update
         CharacterController.RunPlayerUpdateWithInput(currentInputSnapshot);
@@ -62,5 +64,56 @@ public class PlayerManager : MonoBehaviour
 
         // Reset cur
         currentInputSnapshot = new PlayerInputSnapshot();
+    }
+
+    /// <summary>
+    /// Runs all saved input frames AFTER starting frame as player input.
+    /// </summary>
+    /// <param name="startingFrame"></param>
+    public void ForceRunFramesOfClientInputFromFrame(uint startingFrame)
+    {
+        Debug.Log("Running input runback from frame: " + startingFrame);
+        Debug.Log("Start pos: " + transform.position);
+
+        PlayerInputSnapshot[] snapshots = previousInputsLog.ToArray();
+
+        ClientCorrectionManager.Instance.previousPhysicsStatesLog.Clear();
+
+        bool frameFound = false;
+
+        // This should skip running the input from the actual starting frame
+        for (int i = 0; i < snapshots.Length; i++)
+        {
+            if (frameFound)
+            {
+                Debug.Log("Running frame interation " + snapshots[i].gameTick);
+
+                // Run CharacterController update
+                CharacterController.RunPlayerUpdateWithInput(snapshots[i]);
+
+                Debug.Log("post pos " + transform.position);
+
+                // Throw a new fram of player position in the log
+                ClientCorrectionManager.Instance.previousPhysicsStatesLog.Add(new()
+                {
+                    gameTick = snapshots[i].gameTick,
+
+                    position = transform.position,
+                    velocity = CharacterController.CharacterVelocity,
+                    look = transform.rotation
+                });
+
+                // Check if the log is too long
+                if (ClientCorrectionManager.Instance.previousPhysicsStatesLog.Count > GameManager.Instance?.thisPlayerManager.InputLogLength)
+                    ClientCorrectionManager.Instance.previousPhysicsStatesLog.RemoveAt(0);
+            }
+            else
+            {
+                if (snapshots[i].gameTick != startingFrame) continue;
+                else frameFound = true;
+            }
+        }
+
+        Debug.Log(transform.position);
     }
 }

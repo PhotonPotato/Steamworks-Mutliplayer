@@ -158,6 +158,8 @@ public struct PlayerInputSnapshotBundle
 [Serializable]
 public struct PlayerPhysicsStateMessage
 {
+    public uint gameTick;
+
     public Vector3 position;
     public Vector3 velocity;
     public Quaternion look;
@@ -165,5 +167,23 @@ public struct PlayerPhysicsStateMessage
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.PlayerPhysicsState, JsonUtility.ToJson(this));
+    }
+
+    public void ConvertToClientWorldSpace()
+    { 
+        position += new Vector3(0, 10, 0);
+    }
+
+    public void ConvertToServerWorldSpace()
+    {
+        position += new Vector3(0, -10, 0);
+    }
+
+    public float CompareTo(PlayerPhysicsStateMessage other)
+    {
+        return (other.position - position).magnitude +
+               (other.velocity - velocity).magnitude +
+               (Quaternion.Dot(other.look, look) * -1 + 1) * .5f; // Dot product for identical is 1, worst case -1 so I inverted it and to get it from (0-2) * 1
+                                                                // 4 is an arbitrary scalar to scale the error
     }
 }
