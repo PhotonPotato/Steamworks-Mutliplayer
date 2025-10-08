@@ -2296,7 +2296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameStartTimestamp: 0
   elapsedGameTime: 0
-  timeBetweenHeatbeats: 3
+  timeBetweenHeatbeats: 5
   serverToClientLatency: 0
   timeClockText: {fileID: 1022749522}
   debugGameTickText: {fileID: 1106009694}

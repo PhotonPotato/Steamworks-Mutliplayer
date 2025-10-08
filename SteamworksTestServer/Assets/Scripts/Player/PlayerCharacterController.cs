@@ -149,9 +149,10 @@ public class PlayerCharacterController : MonoBehaviour
     {
         currentInputState = snapshot;
 
-        Debug.Log("Pre-movement " + transform.position);
+        //Debug.Log("Pre-movement " + transform.position);
         DoMovement();
-        Debug.Log("Pre-look " + transform.position);
+        //Debug.Log("Pre-look " + transform.position);
+
         DoLooking();
         DoZoom();
         DoCrouch();
@@ -273,10 +274,10 @@ public class PlayerCharacterController : MonoBehaviour
         Vector3 capsuleBottomBeforeMove = GetCapsuleBottomHemisphere();
         Vector3 capsuleTopBeforeMove = GetCapsuleTopHemisphere(controller.height);
 
-        Debug.Log("pre move " + transform.position + "har vel " + CharacterVelocity);
-        Debug.Log("Should move " + (CharacterVelocity * Time.fixedDeltaTime) + " to " + (transform.position + CharacterVelocity * Time.fixedDeltaTime));
+        //Debug.Log("pre move " + transform.position + "har vel " + CharacterVelocity);
+        //Debug.Log("Should move " + (CharacterVelocity * Time.fixedDeltaTime) + " to " + (transform.position + CharacterVelocity * Time.fixedDeltaTime));
         controller.Move(CharacterVelocity * Time.fixedDeltaTime);
-        Debug.Log("post move " + transform.position);
+        //Debug.Log("post move " + transform.position);
 
         // detect obstructions to adjust velocity accordingly
         m_LatestImpactSpeed = Vector3.zero;

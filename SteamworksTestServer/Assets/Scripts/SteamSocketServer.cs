@@ -175,10 +175,12 @@ public class SteamSocketServer : SocketManager
 
             if (logSend)
             {
+                /*
                 if (result == Result.OK)
-                    Console.ServerLog($"Message send(s) success. Sent {byteCount} byte(s)!");
+                    //Console.ServerLog($"Message send(s) success. Sent {byteCount} byte(s)!");
                 else
-                    Console.ServerLog($"Message send(s) failed. Send result: {result}");
+                    //Console.ServerLog($"Message send(s) failed. Send result: {result}");
+                */
             }
 
             return result == Result.OK;

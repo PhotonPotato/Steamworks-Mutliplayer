@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ServerInputManager : MonoBehaviour
@@ -18,11 +19,14 @@ public class ServerInputManager : MonoBehaviour
         public void EmptyBuffer() => buffer.Clear();
 
         /// <summary>
-        /// TODO: Removes input snapshots from old ticks
+        /// Removes stale input snapshots from old ticks
         /// </summary>
         public void CleanBuffer()
         {
-            
+            foreach (var key in buffer.Keys.Where(s => s <= Instance.minValidGameTick).ToList())
+            {
+                buffer.Remove(key);
+            }
         }
     }
 
@@ -31,6 +35,8 @@ public class ServerInputManager : MonoBehaviour
     public List<PlayerInputBuffer> playerInputBuffers;
 
     public uint gameTick => ServerWorldManager.Instance.gameTick;
+
+    public uint minValidGameTick => gameTick - 30;
 
     void Awake()
     {
@@ -50,6 +56,12 @@ public class ServerInputManager : MonoBehaviour
         {
             playerInputBuffers.Add(new PlayerInputBuffer());
         }
+    }
+
+    public void CleanInputBuffers()
+    {
+        foreach (var buf in playerInputBuffers)
+            buf.CleanBuffer();
     }
 
     public void AddInputFrame(int playerIndex, PlayerInputSnapshot input)
@@ -77,6 +89,8 @@ public class ServerInputManager : MonoBehaviour
             ServerWorldManager.Instance.playerManagers[i].RunServerFixedUpdate(curSnapshot);
 
             playerInputBuffers[i].buffer.Remove(gameTick);
+
+            Debug.Log("pib len: " + playerInputBuffers[i].buffer.Count);
         }
     }
 }

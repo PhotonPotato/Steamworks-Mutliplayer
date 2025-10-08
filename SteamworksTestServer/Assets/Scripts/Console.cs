@@ -25,7 +25,10 @@ public sealed class Console : MonoBehaviour
 
         // Hook up the input submitted to out listening function
         ConsoleInput.onSubmit.AddListener(OnConsoleInputSubmitted);
+    }
 
+    private void Start()
+    {
         if (hideOnStart) OnCloseConsole();
     }
 
@@ -41,7 +44,7 @@ public sealed class Console : MonoBehaviour
     public static void Log(object message)
     {
         if (Instance == null) return;
-
+        
         Instance.ConsoleText.text += $"\n<color=#459c2d>{Mathf.Round(Time.time * 100) / 100}</color>:\t{message}";
 
         if (Instance.ConsoleText.text.Length > 2048)

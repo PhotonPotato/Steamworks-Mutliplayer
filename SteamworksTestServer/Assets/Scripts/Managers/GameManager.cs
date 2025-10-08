@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
         thisPlayerManager = playerObjects[0].GetComponent<PlayerManager>();
         if (thisPlayerManager == null) Log("Missing player manager");
 
-
         // Update the current client scene
         currentGameScene = SceneManager.GetSceneByName(GameFlowManager.Instance.GameScene).GetPhysicsScene();
     }
@@ -43,6 +42,9 @@ public class GameManager : MonoBehaviour
     public void RunPlayerFixedUpdate()
     {
         thisPlayerManager?.RunClientFixedUpdate();
+
+        InputLossMonnitor.Instance?.AddRunningTickClient(TimeKeeper.Instance.gameTick);
+
         ClientCorrectionManager.Instance?.RunFixedUpdate();
     }
 

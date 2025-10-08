@@ -142,6 +142,20 @@ public struct PlayerInputSnapshot
     {
         return Message.CreateMessage(MessageType.InputSnapshot, JsonUtility.ToJson(this));
     }
+
+    public override bool Equals(object obj)
+    {
+        if (obj.GetType().Equals(this.GetType()))
+        {
+            PlayerInputSnapshot other = (PlayerInputSnapshot)obj;
+
+            return other.moveInput == (moveInput) && other.lookInput == (lookInput) &&
+                   other.sprintInput == (sprintInput) && other.jumpInput == (jumpInput) &&
+                   other.crouchInput == (crouchInput);
+        }
+
+        return false;
+    }
 }
 
 [Serializable]

@@ -22,7 +22,7 @@ public class TimeKeeper : MonoBehaviour
     [SerializeField] private float elapsedGameTime;
     [SerializeField] public uint gameTick { get; private set; }
 
-    public float timeBetweenHeatbeats = 3;
+    public float timeBetweenHeatbeats = 5;
     private DateTime clientTimeOfLastEst;
     private float timeOflastHeartbeat = float.NegativeInfinity;
     [SerializeField] private double serverToClientLatency;
@@ -123,7 +123,7 @@ public class TimeKeeper : MonoBehaviour
 
     public uint GetGameTick() => gameTick;
 
-    private void ForceClientHeartbeat()
+    public void ForceClientHeartbeat()
     {
         clientTime = GetNetworkTime();
 

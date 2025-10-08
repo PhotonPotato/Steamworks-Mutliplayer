@@ -35,7 +35,7 @@ public class SteamServerConnectionManager : ConnectionManager
     {
         // Message received from socket server, delegate to method for processing
         //SteamManager.Instance.ProcessMessageFromSocketServer(data, size);
-        Console.Log($"Connection Got A Message #{messageNum}");
+        //Console.Log($"Connection Got A Message #{messageNum}");
 
         // Process the message right here
 

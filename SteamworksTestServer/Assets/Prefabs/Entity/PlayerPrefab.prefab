@@ -477,4 +477,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IS_IN_TEST_SCENE: 0
   SEND_INPUT_SNAPSHOTS_TO_MONITOR: 1
-  InputLogLength: 30
+  InputLogLength: 60

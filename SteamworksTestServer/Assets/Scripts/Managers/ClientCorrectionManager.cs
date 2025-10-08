@@ -15,6 +15,8 @@ public class ClientCorrectionManager : MonoBehaviour
     [Header("Trackers")]
     public List<PlayerPhysicsStateMessage> previousPhysicsStatesLog = new List<PlayerPhysicsStateMessage>();
 
+    public uint lastRecievedStateTick { get; private set; } = 0;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -58,9 +60,11 @@ public class ClientCorrectionManager : MonoBehaviour
     /// <param name="state"> The new physics state from the server </param>
     public void OnReceivedNewPlayerStateFromServer(PlayerPhysicsStateMessage state)
     {
+        lastRecievedStateTick = state.gameTick;
+
         if (controller == null) UpdatePlayerCharacterController();
 
-        Console.Log("Received new state from server");
+        //Console.Log("Received new state from server");
 
         PlayerPhysicsStateMessage loggedState = previousPhysicsStatesLog.Find(f => f.gameTick == state.gameTick);
 
@@ -75,8 +79,8 @@ public class ClientCorrectionManager : MonoBehaviour
         {
             // Run comparison
             float err = state.CompareTo(loggedState);
-            Debug.Log("prediction error " + err);
-            Debug.Log($"Frame difference {TimeKeeper.Instance.gameTick - state.gameTick}. Server: {state.gameTick}. Cur frame: {TimeKeeper.Instance.gameTick}");
+            //Debug.Log("prediction error " + err);
+            //Debug.Log($"Frame difference {TimeKeeper.Instance.gameTick - state.gameTick}. Server: {state.gameTick}. Cur frame: {TimeKeeper.Instance.gameTick}");
 
             if (err >= maximumError)
             {
@@ -97,7 +101,7 @@ public class ClientCorrectionManager : MonoBehaviour
     {
         if (controller == null) UpdatePlayerCharacterController();
 
-        Console.Log("Updating state");
+        //Console.Log("Updating state");
         controller.transform.position = state.position;
         controller.CharacterVelocity = state.velocity;
         controller.transform.rotation = state.look;

@@ -40,10 +40,14 @@ public class PlayerManager : MonoBehaviour
         // Update the input log and player position log
         previousInputsLog.Enqueue(currentInputSnapshot);
 
-        if (previousInputsLog.Count > InputLogLength)
+        while (previousInputsLog.Count > InputLogLength)
         {
             previousInputsLog.Dequeue();
         }
+
+        InputLogLength = Mathf.Max(5, (int)(TimeKeeper.Instance.gameTick - ClientCorrectionManager.Instance.lastRecievedStateTick));
+
+        Debug.Log($"Prev inputs length: {previousInputsLog.Count} Tick: {TimeKeeper.Instance.gameTick}");
 
         // Run CharacterController update
         CharacterController.RunPlayerUpdateWithInput(currentInputSnapshot);
@@ -91,8 +95,6 @@ public class PlayerManager : MonoBehaviour
                 // Run CharacterController update
                 CharacterController.RunPlayerUpdateWithInput(snapshots[i]);
 
-                Debug.Log("post pos " + transform.position);
-
                 // Throw a new fram of player position in the log
                 ClientCorrectionManager.Instance.previousPhysicsStatesLog.Add(new()
                 {
@@ -104,7 +106,7 @@ public class PlayerManager : MonoBehaviour
                 });
 
                 // Check if the log is too long
-                if (ClientCorrectionManager.Instance.previousPhysicsStatesLog.Count > GameManager.Instance?.thisPlayerManager.InputLogLength)
+                while (ClientCorrectionManager.Instance.previousPhysicsStatesLog.Count > GameManager.Instance?.thisPlayerManager.InputLogLength)
                     ClientCorrectionManager.Instance.previousPhysicsStatesLog.RemoveAt(0);
             }
             else
