@@ -49,12 +49,12 @@ public class TimeKeeper : MonoBehaviour
         }
     }
 
-    private void Update()
+    public void RunControlledFixedUpdate()
     {
         // Update the clocks
-        clientTime.AddSeconds(Time.deltaTime);
+        clientTime.AddSeconds(Time.fixedDeltaTime);
         //serverTime.AddSeconds(Time.deltaTime);
-        elapsedGameTime += Time.deltaTime;
+        elapsedGameTime += Time.fixedDeltaTime;
         gameTick = (uint) Mathf.Floor(elapsedGameTime / TickSpeed);
 
         // Try to rehone the clients time every so often

@@ -76,7 +76,7 @@ public class ServerInputManager : MonoBehaviour
         {
             playerInputBuffers[playerIndex].buffer[bundle.snapshots[i].gameTick] = bundle.snapshots[i];
 
-            InputLossMonnitor.Instance?.AddServerInputSnapshot(bundle.snapshots[i]);
+            InputLossMonitor.Instance?.AddServerInputSnapshot(bundle.snapshots[i]);
         }
     }
 

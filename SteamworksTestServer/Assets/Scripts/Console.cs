@@ -84,12 +84,20 @@ public sealed class Console : MonoBehaviour
             {
                 case "beginILM":
                     Log("beginning Input Loss Monitoring");
-                    InputLossMonnitor.Instance?.StartMonitoring();
+                    InputLossMonitor.Instance?.StartInputMonitoring();
                     break;
 
                 case "endILM":
                     Log("ending Input Loss Monitoring");
-                    InputLossMonnitor.Instance?.EndMonitoring();
+                    InputLossMonitor.Instance?.EndInputMonitoring();
+                    break;
+
+                case "beginSTM":
+                    InputLossMonitor.Instance?.StartTickMonitoring();
+                    break;
+
+                case "endSTM":
+                    InputLossMonitor.Instance?.EndTickMonitoring();
                     break;
 
                 default:

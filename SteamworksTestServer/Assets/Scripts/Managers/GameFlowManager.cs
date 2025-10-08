@@ -128,11 +128,14 @@ public class GameFlowManager : MonoBehaviour
     }
 
     private void FixedUpdate()
-    { 
-        
+    {
+
         // Manually call the pre-physics fixed update of the other  child managers
 
         // PRE-PHYSICS TICK
+        // Always run TimeKeeper fixed update first to keep gameTick consistent throughout update
+        TimeKeeper.Instance?.RunControlledFixedUpdate();
+
         GameManager.Instance?.RunPlayerFixedUpdate();
         ServerWorldManager.Instance?.RunServerPrePhysicsTick();
 

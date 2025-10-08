@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     {
         thisPlayerManager?.RunClientFixedUpdate();
 
-        InputLossMonnitor.Instance?.AddRunningTickClient(TimeKeeper.Instance.gameTick);
+        InputLossMonitor.Instance?.AddRunningTickClient(TimeKeeper.Instance.gameTick);
 
         ClientCorrectionManager.Instance?.RunFixedUpdate();
     }

@@ -35,7 +35,7 @@ public class PlayerManager : MonoBehaviour
         // Get new input, save it
         currentInputSnapshot = InputHandler.GeneratePlayerInputSnapshot();
 
-        if (SEND_INPUT_SNAPSHOTS_TO_MONITOR) InputLossMonnitor.Instance?.AddClientInputSnapshot(currentInputSnapshot);
+        if (SEND_INPUT_SNAPSHOTS_TO_MONITOR) InputLossMonitor.Instance?.AddClientInputSnapshot(currentInputSnapshot);
 
         // Update the input log and player position log
         previousInputsLog.Enqueue(currentInputSnapshot);
