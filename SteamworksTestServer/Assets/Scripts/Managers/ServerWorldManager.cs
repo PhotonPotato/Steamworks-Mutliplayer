@@ -46,10 +46,9 @@ public class ServerWorldManager : MonoBehaviour
     {
         gameTick = (TimeKeeper.Instance?.gameTick ?? ServerTickDelay) - ServerTickDelay;
 
+        InputLossMonnitor.Instance.AddRunningTickServer(gameTick);
         //Console.ServerLog("Running next input frame. Sim tick num " + gameTick);
         ServerInputManager.Instance.RunNextInputFrame();
-
-        InputLossMonnitor.Instance.AddRunningTickServer(gameTick);
 
         if (gameTick % 60 == 0)
             ServerInputManager.Instance.CleanInputBuffers();
