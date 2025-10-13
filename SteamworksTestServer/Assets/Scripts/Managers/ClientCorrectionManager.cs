@@ -79,8 +79,8 @@ public class ClientCorrectionManager : MonoBehaviour
         else
         {
             // Run comparison
-            float posErr = state.ComparePosAndVelTo(loggedState);
-            float lookErr = state.CompareLookTo(loggedState);
+            float posErr = state.CompareTo(loggedState);
+            //float lookErr = state.CompareLookTo(loggedState);
 
             bool correctionMade = false;
 
@@ -90,27 +90,25 @@ public class ClientCorrectionManager : MonoBehaviour
             if (posErr >= maximumPosError)
             {
                 // Reset player state to how it should be
-                SetPlayerPositionAndVelocity(state);
+                SetPlayerToState(state);//PositionAndVelocity(state);
 
                 Debug.Log(state.position);
 
                 correctionMade = true;
             }
 
-            if (lookErr >= maximumLookError)
+            /*if (lookErr >= maximumLookError)
             {
-                SetPlayerRotation(loggedState);
+                SetPlayerRotation(state);
 
                 Debug.Log(state.look);
 
                 correctionMade = true;
-            }
+            }*/
 
 
             if (correctionMade)
             {
-                Physics.SyncTransforms();
-
                 // Rerun player physics from there on back to current
                 GameManager.Instance?.thisPlayerManager.ForceRunFramesOfClientInputFromFrame(state.gameTick);
             }

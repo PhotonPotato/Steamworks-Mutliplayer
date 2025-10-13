@@ -85,6 +85,9 @@ public class PlayerManager : MonoBehaviour
 
         bool frameFound = false;
 
+        // Run a pre-movement physics sync
+        Physics.SyncTransforms();
+
         // This should skip running the input from the actual starting frame
         for (int i = 0; i < snapshots.Length; i++)
         {
@@ -94,6 +97,8 @@ public class PlayerManager : MonoBehaviour
 
                 // Run CharacterController update
                 CharacterController.RunPlayerUpdateWithInput(snapshots[i]);
+
+                Physics.SyncTransforms();
 
                 // Throw a new fram of player position in the log
                 ClientCorrectionManager.Instance.previousPhysicsStatesLog.Add(new()
@@ -111,6 +116,7 @@ public class PlayerManager : MonoBehaviour
             }
             else
             {
+                // It has to first iterate through to find the first input tick snapshot before simulation
                 if (snapshots[i].gameTick != startingFrame) continue;
                 else frameFound = true;
             }
