@@ -6,7 +6,7 @@ ScriptsOnlyBuild:
     - Console
     - GameFlowManager
     - GameManager
-    - InputLossMonnitor
+    - InputLossMonitor
     - LobbyManager
     - MainMenuManager
     - PlayerCharacterController
@@ -1174,10 +1174,10 @@ ScriptsOnlyBuild:
     className: Console
   - hash:
       serializedVersion: 2
-      Hash: 04ffd56916af407d3a9653d1d734d565
+      Hash: e97ab8ba685ab6a85f149edc43ff0efc
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
-    className: InputLossMonnitor
+    className: InputLossMonitor
   - hash:
       serializedVersion: 2
       Hash: 206a5c9d773ef22bc5ed2f451cd7ffbf

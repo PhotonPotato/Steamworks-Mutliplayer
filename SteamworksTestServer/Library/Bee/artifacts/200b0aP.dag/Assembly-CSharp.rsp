@@ -304,7 +304,7 @@
 "Assets/Network Time Protocol/Scripts/NtpClient.cs"
 "Assets/Network Time Protocol/Test/TestScript.cs"
 "Assets/Scripts/Console.cs"
-"Assets/Scripts/InputLossMonnitor.cs"
+"Assets/Scripts/InputLossMonitor.cs"
 "Assets/Scripts/Managers/BetweenGamesManager.cs"
 "Assets/Scripts/Managers/ClientCorrectionManager.cs"
 "Assets/Scripts/Managers/GameFlowManager.cs"

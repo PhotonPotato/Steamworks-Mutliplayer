@@ -10,7 +10,8 @@ public class ClientCorrectionManager : MonoBehaviour
     public PlayerCharacterController controller;
     
     [Header("Settings")]
-    public float maximumError = .1f;
+    public float maximumPosError = .1f;
+    public float maximumLookError = .1f;
 
     [Header("Trackers")]
     public List<PlayerPhysicsStateMessage> previousPhysicsStatesLog = new List<PlayerPhysicsStateMessage>();
@@ -78,17 +79,36 @@ public class ClientCorrectionManager : MonoBehaviour
         else
         {
             // Run comparison
-            float err = state.CompareTo(loggedState);
+            float posErr = state.ComparePosAndVelTo(loggedState);
+            float lookErr = state.CompareLookTo(loggedState);
+
+            bool correctionMade = false;
+
             //Debug.Log("prediction error " + err);
             //Debug.Log($"Frame difference {TimeKeeper.Instance.gameTick - state.gameTick}. Server: {state.gameTick}. Cur frame: {TimeKeeper.Instance.gameTick}");
 
-            if (err >= maximumError)
+            if (posErr >= maximumPosError)
             {
                 // Reset player state to how it should be
-                SetPlayerToState(state);
+                SetPlayerPositionAndVelocity(state);
 
                 Debug.Log(state.position);
 
+                correctionMade = true;
+            }
+
+            if (lookErr >= maximumLookError)
+            {
+                SetPlayerRotation(loggedState);
+
+                Debug.Log(state.look);
+
+                correctionMade = true;
+            }
+
+
+            if (correctionMade)
+            {
                 Physics.SyncTransforms();
 
                 // Rerun player physics from there on back to current
@@ -104,6 +124,21 @@ public class ClientCorrectionManager : MonoBehaviour
         //Console.Log("Updating state");
         controller.transform.position = state.position;
         controller.CharacterVelocity = state.velocity;
+        controller.transform.rotation = state.look;
+    }
+
+    public void SetPlayerPositionAndVelocity(PlayerPhysicsStateMessage state)
+    {
+        if (controller == null) UpdatePlayerCharacterController();
+
+        controller.transform.position = state.position;
+        controller.CharacterVelocity = state.velocity;
+    }
+
+    public void SetPlayerRotation(PlayerPhysicsStateMessage state)
+    {
+        if (controller == null) UpdatePlayerCharacterController();
+
         controller.transform.rotation = state.look;
     }
 }

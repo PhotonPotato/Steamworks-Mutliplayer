@@ -110,6 +110,9 @@ public class InputLossMonitor : MonoBehaviour
             }
         }
 
+        // The server is always 6 ticks behind so you will "lose" 6 extra ticks
+        lost = Mathf.Max(lost - 6, 0);
+
         Console.ServerLog($"Lost {lost}, Run {received}, Total: {lost + received}.");
         Console.ServerLog($"Lost %: {(double)lost / (lost + received) * 100}.");
 

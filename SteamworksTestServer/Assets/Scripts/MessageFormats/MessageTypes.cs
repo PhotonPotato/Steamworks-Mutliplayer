@@ -200,4 +200,12 @@ public struct PlayerPhysicsStateMessage
                (Quaternion.Dot(other.look, look) * -1 + 1) * .5f; // Dot product for identical is 1, worst case -1 so I inverted it and to get it from (0-2) * 1
                                                                 // 4 is an arbitrary scalar to scale the error
     }
+
+    public float CompareLookTo(PlayerPhysicsStateMessage other) => (Quaternion.Dot(other.look, look) * -1 + 1) * .5f;
+
+    public float ComparePosAndVelTo(PlayerPhysicsStateMessage other)
+    {
+        return (other.position - position).magnitude +
+               (other.velocity - velocity).magnitude;
+    }
 }

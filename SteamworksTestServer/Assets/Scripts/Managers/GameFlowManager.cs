@@ -125,6 +125,15 @@ public class GameFlowManager : MonoBehaviour
             if (Console.Instance?.gameObject.activeSelf ?? false) Console.Instance?.OnCloseConsole();
             else Console.Instance?.OnOpenConsole();
         }
+
+        if (UnityEngine.InputSystem.Keyboard.current.iKey.wasPressedThisFrame)
+        {
+            InputLossMonitor.Instance?.EndTickMonitoring();
+        }
+        else if (UnityEngine.InputSystem.Keyboard.current.uKey.wasPressedThisFrame)
+        {
+            InputLossMonitor.Instance?.StartTickMonitoring();
+        }
     }
 
     private void FixedUpdate()
