@@ -79,12 +79,16 @@ public class ServerWorldManager : MonoBehaviour
             playerManagers[i] = Instantiate(PlayerPrefab, PlayersParent).GetComponent<PlayerManager>();
 
             // Immediately turn off the players' cameras
-            playerManagers[i].GetComponentInChildren<Camera>().enabled = false;
             playerManagers[i].GetComponentInChildren<AudioListener>().enabled = false;
 
             playerManagers[i].GetComponent<PlayerInput>().enabled = false;
-            playerManagers[i].GetComponent<PlayerCharacterController>().enabled = true;
-            playerManagers[i].GetComponent<PlayerCharacterController>().ThisPhysicsScene = curPhysScene;
+
+            PlayerCharacterController charController = playerManagers[i].GetComponent<PlayerCharacterController>();
+
+            charController.enabled = true;
+            charController.ThisPhysicsScene = curPhysScene;
+            charController.Start();
+            
 
             playerManagers[i].gameObject.layer = 7;
         }

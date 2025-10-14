@@ -363,6 +363,7 @@
 "Assets/Scripts/Managers/SteamServerConnectionManager.cs"
 "Assets/Scripts/Managers/TimeKeeper.cs"
 "Assets/Scripts/MessageFormats/MessageTypes.cs"
+"Assets/Scripts/Player/DummyPlayerBehavior.cs"
 "Assets/Scripts/Player/GameConstants.cs"
 "Assets/Scripts/Player/InputSystemFirstPersonControls.cs"
 "Assets/Scripts/Player/PlayerCharacterController.cs"

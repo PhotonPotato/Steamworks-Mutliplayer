@@ -618,6 +618,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thisPlayerManager: {fileID: 0}
+  dummyPlayer: {fileID: 0}
 --- !u!1 &624958129
 GameObject:
   m_ObjectHideFlags: 0
@@ -1983,6 +1984,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerPrefab: {fileID: 5620793081413533436, guid: 4911fae0d171b4c1b87d56f71c5f53b1, type: 3}
+  PlayerDummyPrefab: {fileID: 5620793081413533436, guid: b35c9780ee006422dbbcb715cbf45353, type: 3}
 --- !u!1 &1200128356
 GameObject:
   m_ObjectHideFlags: 0

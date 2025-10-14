@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public PlayerManager thisPlayerManager;
 
     public GameObject[] playerObjects { get; private set; }
+    public GameObject dummyPlayer;
 
     private void Awake()
     {
@@ -21,12 +22,19 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Log("Spawning players.");
-        playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length, currentGameScene);
+        Log("Spawning players and dummy.");
+        playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length, currentGameScene, out dummyPlayer);
 
         // Try to get player manager
         thisPlayerManager = playerObjects[0].GetComponent<PlayerManager>();
         if (thisPlayerManager == null) Log("Missing player manager");
+
+        thisPlayerManager.CharacterController.cam = dummyPlayer.GetComponentInChildren<Camera>();
+        thisPlayerManager.CharacterController.SetFOVs(thisPlayerManager.CharacterController.cam.fieldOfView);
+
+        // Dummy setup
+        dummyPlayer.GetComponent<DummyPlayerBehavior>().InitDummy(thisPlayerManager.CharacterController.DummyCameraTransform, thisPlayerManager.transform);
+
 
         // Update the current client scene
         currentGameScene = SceneManager.GetSceneByName(GameFlowManager.Instance.GameScene).GetPhysicsScene();

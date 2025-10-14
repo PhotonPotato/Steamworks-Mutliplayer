@@ -15,6 +15,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     private CharacterController controller;
 
+    public Transform DummyCameraTransform;
     [SerializeField] public Camera cam;
     [SerializeField] private float movementSpeed = 2.0f;
     [SerializeField] public float lookSensitivity = 1.0f;
@@ -79,32 +80,48 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void Awake()
     {
-        inputActions = new InputSystemFirstPersonControls();
-
-        //m_PlayerInventoryManager = GetComponent<PlayerInventoryManager>();
-        //m_weaponController = GetComponent<WeaponController>();
-
-        m_PlayerInput = GetComponent<PlayerInput>();
-        m_PlayerInputHandler = GetComponent<PlayerInputHandler>();
-
-        //Check the input type
-        if (m_PlayerInput.devices[0] is XInputController)
+        try
         {
-            usingGamepad = true;
-            m_Gamepad = m_PlayerInput.devices[0] as XInputController;
+            inputActions = new InputSystemFirstPersonControls();
 
-            //GetComponent<WeaponController>().m_Controller = m_Gamepad;
+            //m_PlayerInventoryManager = GetComponent<PlayerInventoryManager>();
+            //m_weaponController = GetComponent<WeaponController>();
+
+            m_PlayerInput = GetComponent<PlayerInput>();
+            m_PlayerInputHandler = GetComponent<PlayerInputHandler>();
+
+            //Check the input type
+            // SAFE device/control-scheme detection (no indexing!)
+            usingGamepad = false;
+            if (m_PlayerInput != null && m_PlayerInput.enabled)
+            {
+                // Prefer control scheme over poking devices
+                usingGamepad = m_PlayerInput.currentControlScheme == "Gamepad";
+
+                // Only set XInput handle if actually available
+                if (usingGamepad && Gamepad.current is XInputController xi)
+                    m_Gamepad = xi;
+            }
+
+          
+            Debug.Log("awake");
         }
+        catch(Exception e)
+        {
+            Debug.LogError("Error in server awake: " + e.Message);
+        }
+        
     }
 
-    private void Start()
+    public void Start()
     {
         Debug.Log("Startup");
         controller = GetComponent<CharacterController>();
+        Debug.Log(controller == null ? "awake Null controller" : "");
         initHeight = controller.height;
 
         // Set the fov
-        SetFOVs(cam.fieldOfView);
+        //SetFOVs(cam != null ? cam.fieldOfView : 90);
     }
 
     private void OnEnable()
@@ -175,7 +192,7 @@ public class PlayerCharacterController : MonoBehaviour
         xRotation -= lookY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
         
-        cam.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        DummyCameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         
         transform.Rotate(Vector3.up * lookX);
     }
@@ -184,6 +201,8 @@ public class PlayerCharacterController : MonoBehaviour
     {
         HasPressedJumpThisFrame = false;
 
+        if (controller == null) controller = GetComponent<CharacterController>();
+        initHeight = controller.height;
         isGrounded = ThisPhysicsScene.Raycast(transform.position, Vector3.down, 1.1f, LayerMask.GetMask("Ground")) || controller.isGrounded;
 
         isSprinting = GetPlayerSprintInput();
@@ -331,7 +350,7 @@ public class PlayerCharacterController : MonoBehaviour
 
     private void UpdateZoom()
     {
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, zoomSpeed * Time.fixedDeltaTime);
+        if (cam != null) cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, zoomSpeed * Time.fixedDeltaTime);
     }
 
     public void SetFOVs(float baseFOV, float overrideSprintFOV = -1)

@@ -9,6 +9,7 @@ public class PlayerSpawnManager : MonoBehaviour
         
     [Header("Refs")]
     public GameObject PlayerPrefab;
+    public GameObject PlayerDummyPrefab;
 
     private void Awake()
     {
@@ -16,7 +17,7 @@ public class PlayerSpawnManager : MonoBehaviour
         else DestroyImmediate(gameObject);
     }
 
-    public GameObject[] SpawnAllPlayers(int count, PhysicsScene physicsScene)
+    public GameObject[] SpawnAllPlayers(int count, PhysicsScene physicsScene, out GameObject SpawnedDummy)
     {
         GameObject[] players = new GameObject[count];
 
@@ -33,12 +34,13 @@ public class PlayerSpawnManager : MonoBehaviour
                 players[i].GetComponent<CharacterController>().enabled = false;
                 players[i].GetComponent<PlayerInput>().enabled = false;
                 players[i].GetComponent<PlayerInputHandler>().enabled = false;
-
-                players[i].GetComponentInChildren<Camera>().enabled = false;
             }
         }
 
         Log($"Spawned {count} player(s).");
+
+        // Spawn the dummy
+        SpawnedDummy = Instantiate(PlayerDummyPrefab);
 
         return players;
     }
