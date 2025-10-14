@@ -149,10 +149,11 @@ public class GameFlowManager : MonoBehaviour
         ServerWorldManager.Instance?.RunServerPrePhysicsTick();
 
         // RUN PHYSICS
+        Physics.SyncTransforms();
 
         // IN GAME
         if (curScene.name == GameScene)
-        {
+        { 
             // Client
             GameManager.Instance?.RunClientPhysics();
 
