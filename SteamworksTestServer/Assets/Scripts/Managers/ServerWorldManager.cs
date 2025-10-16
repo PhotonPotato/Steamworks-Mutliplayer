@@ -1,11 +1,20 @@
+using Steamworks.Data;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-
 public class ServerWorldManager : MonoBehaviour
 {
+    /// <summary>
+    /// Datatype for a collection that uses steamId for indexing
+    /// </summary>
+    public class PlayerManagersBySteamID : KeyedCollection<ulong, PlayerManager>
+    {
+        protected override ulong GetKeyForItem(PlayerManager item) => item.attachedSteamId;
+    }
+
     public static ServerWorldManager Instance;
 
     [Header("Refs")]
@@ -15,7 +24,8 @@ public class ServerWorldManager : MonoBehaviour
     [Header("Trackers")]
     public PhysicsScene curPhysScene;
     private SteamSocketServer socketServer;
-    public PlayerManager[] playerManagers;
+    public List<PlayerManager> playerManagers = new List<PlayerManager>();
+    public Dictionary<ulong, int> steamIdToIndex = new Dictionary<ulong, int>();
 
     // Running the server 30 ticks behind
     public uint gameTick { get; private set; } = (TimeKeeper.Instance?.gameTick ?? ServerTickDelay) - ServerTickDelay;
@@ -72,14 +82,13 @@ public class ServerWorldManager : MonoBehaviour
     /// </summary>
     public void SpawnInPlayerZombies()
     {
-        playerManagers = new PlayerManager[socketServer.playerCount];
+        ulong[] connectedSteamIDs = socketServer.GetConnectedIds();
 
         for (int i = 0; i < socketServer.playerCount; i++)
         {
-            playerManagers[i] = Instantiate(PlayerPrefab, PlayersParent).GetComponent<PlayerManager>();
+            playerManagers.Add(Instantiate(PlayerPrefab, PlayersParent).GetComponent<PlayerManager>());
 
             // Immediately turn off the players' cameras
-            playerManagers[i].GetComponentInChildren<AudioListener>().enabled = false;
 
             playerManagers[i].GetComponent<PlayerInput>().enabled = false;
 
@@ -88,23 +97,30 @@ public class ServerWorldManager : MonoBehaviour
             charController.enabled = true;
             charController.ThisPhysicsScene = curPhysScene;
             charController.Start();
-            
 
+            playerManagers[i].attachedSteamId = connectedSteamIDs[i];
             playerManagers[i].gameObject.layer = 7;
+
+            Debug.Log("Adding steam id to index: " + connectedSteamIDs[i]);
+            steamIdToIndex[connectedSteamIDs[i]] = i;
         }
     }
 
     public void SendBackPlayerPhysicsStates()
     {
-        for (int i = 0; i < playerManagers.Length; i++)
+        foreach (Connection connection in socketServer.Connected)
         {
-            socketServer.SendPlayerPhysicsState(0, new()
+            ulong connectionId = (ulong)connection.UserData;
+            Debug.Log(connectionId);
+            int index = steamIdToIndex[connectionId];
+
+            socketServer.SendPlayerPhysicsState(connectionId, new()
             {
                 gameTick = gameTick,
 
-                position = playerManagers[i].transform.position,
-                velocity = playerManagers[i].CharacterController.CharacterVelocity,
-                look = playerManagers[i].transform.rotation
+                position = playerManagers[index].transform.position,
+                velocity = playerManagers[index].CharacterController.CharacterVelocity,
+                look = playerManagers[index].transform.rotation
             });
         }
     }

@@ -47,6 +47,10 @@ public class TimeKeeper : MonoBehaviour
             // message type.
             SteamManager.Instance.RequestGameStartTimestampPackage();
         }
+        else
+        {
+            SteamManager.Instance.RequestGameStartTimestampPackage();
+        }
     }
 
     public void RunControlledFixedUpdate()

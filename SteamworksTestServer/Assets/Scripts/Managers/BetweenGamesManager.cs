@@ -113,11 +113,19 @@ public class BetweenGamesManager : MonoBehaviour
             LobbyManager.Instance.CloseLobbyFromPublic();
 
             GameFlowManager.Instance.LoadGameScene();
+
+            SteamManager.Instance.SendGameStartAnnouncementToServer();
         }
         else
         {
             Log("Cannot start game, not host.");
         }
+    }
+
+    public void OnGameStarted()
+    {
+        GameFlowManager.Instance.LoadGameScene();
+        Log("Loading game scene.");
     }
 
     /// <summary>

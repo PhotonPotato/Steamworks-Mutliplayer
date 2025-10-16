@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Linq;
 using System.Collections.Generic;
 using Steamworks;
 using Steamworks.Data;
@@ -10,9 +11,17 @@ using System.Buffers;
 public class SteamSocketServer : SocketManager
 {
     List<Friend> connectedPlayers = new List<Friend>();
+
+    // Another way to access connections for specific players thats O(1) without doing a search
+    Dictionary<ulong, Connection> connectionList = new Dictionary<ulong, Connection>();
+
+    // Links a steam id to an index in teh connected players list
+    Dictionary<ulong, int> steamIDToIndex = new Dictionary<ulong, int>();
+
     uint ownerIndex = 0; // Usually gonna be the first person to enter the server
 
     DateTime lastServerTime;
+    DateTime gameStartTime = DateTime.MinValue;
 
     public int playerCount => connectedPlayers.Count;
 
@@ -39,8 +48,12 @@ public class SteamSocketServer : SocketManager
 
         Console.ServerLog($"{friend.Name} has joined the game");
 
-        // Update the player list
+        connection.UserData = (long) friend.Id.Value;
+
+        // Update the player list, connection list, and steamID -> index mapping
         connectedPlayers.Add(friend);
+        connectionList[friend.Id.Value] = connection;
+        steamIDToIndex[friend.Id.Value] = connectedPlayers.Count - 1;
     }
 
     public override void OnDisconnected(Connection connection, ConnectionInfo data)
@@ -48,7 +61,11 @@ public class SteamSocketServer : SocketManager
         base.OnDisconnected(connection, data);
         Console.ServerLog($"{data.Identity} is out of here");
 
-        connectedPlayers.Remove(connectedPlayers.Find(f => (long)f.Id.Value == connection.UserData));
+        ulong steamID = (ulong) connection.UserData; //ulong.Parse(connection.ConnectionName);
+        Debug.Log("sds" + steamID);
+        connectedPlayers.RemoveAt(steamIDToIndex[steamID]);//connectedPlayers.Find(f => (long)f.Id.Value == connection.UserData));
+        connectionList.Remove(steamID);
+        steamIDToIndex.Remove(steamID);
     }
 
     public override void OnMessage(Connection connection, NetIdentity identity, IntPtr data, int size, long messageNum, long recvTime, int channel)
@@ -88,11 +105,30 @@ public class SteamSocketServer : SocketManager
                     SendMessageToClient(connection, BuildServerTimestampPackage().ToMessage(), SendType.Reliable);
                     break;
 
+                //TODO: reqork the following 2 message types and how they are used, now there are 2 "gameStart" messages and types
+                case MessageType.GameStartMessage:
+                    // Pretty much only gonna get this from host, just
+                    // echo this message back to everyone in the server.
+                    Console.ServerLog($"Received a game start message from {connection.ConnectionName}. Echoing to everyone...");
+
+                    AnnounceGameStart();
+                    break;
+
                 case MessageType.GameStartTimestampRequest:
                     Console.ServerLog($"Received a gameStartTimestampRequest from {connection.ConnectionName}");
 
                     // Send a timestamp with a "GameStart" type
-                    SendMessageToClient(connection, BuildServerTimestampPackage().ToGameStartTimestampMessage(), SendType.Reliable);
+                    if (gameStartTime == DateTime.MinValue)
+                    {
+                        // Then we are host trying to start game
+                        SendMessageToClient(connection, BuildServerTimestampPackage().ToGameStartTimestampMessage(), SendType.Reliable);
+                        gameStartTime = lastServerTime;
+                    }
+                    else
+                    {
+                        // Then we arent host and need to just get the time
+                        SendMessageToClient(connection, BuildGameStartTimestampMessage().ToGameStartTimestampMessage(), SendType.Reliable);
+                    }
                     break;
 
                 case MessageType.InputSnapshot:
@@ -239,16 +275,34 @@ public class SteamSocketServer : SocketManager
         };
     }
 
-    // HIGH CODING HEADS UP
-    public void SendPlayerPhysicsState(int playerIndex, PlayerPhysicsStateMessage state)
+    public ServerTimestampPackageMessage BuildGameStartTimestampMessage()
     {
-        foreach (var connection in Connected)
+        return new ServerTimestampPackageMessage
         {
-            if (connection.ConnectionName == connectedPlayers[playerIndex].Name)
-            {
-                state.ConvertToClientWorldSpace();
-                SendMessageToClient(connection, state.ToMessage(), SendType.Unreliable);
-            }
+            // Apparently "o" is the flag for a round trip format, not sure y thats important
+            timeData = gameStartTime.ToString("o")
+        };
+    }
+
+    // HIGH CODING HEADS UP
+    public void SendPlayerPhysicsState(ulong playerId, PlayerPhysicsStateMessage state)
+    {
+        state.ConvertToClientWorldSpace();
+        SendMessageToClient(connectionList[playerId], state.ToMessage(), SendType.Unreliable);
+    }
+
+    /// <summary>
+    /// Returns an array of connected user steamIds
+    /// </summary>
+    public ulong[] GetConnectedIds() => steamIDToIndex.Keys.ToArray();
+
+    public void AnnounceGameStart()
+    {
+        foreach (Connection connection in Connected)
+        {
+            if (steamIDToIndex[(ulong) connection.UserData] == ownerIndex) continue;
+
+            SendMessageToClient(connection, new GameStartMessage().ToMessage(), SendType.Reliable);
         }
     }
 }

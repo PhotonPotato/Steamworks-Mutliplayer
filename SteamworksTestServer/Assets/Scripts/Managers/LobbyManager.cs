@@ -149,6 +149,7 @@ public class LobbyManager : MonoBehaviour
         if (lobby.Owner.Id == SteamClient.SteamId)
         {
             // Owner
+            OpenLobbyToPublic();
 
             if (SteamManager.Instance.activeServer) Log("You are already in and hosting this server.");
             else
@@ -226,6 +227,8 @@ public class LobbyManager : MonoBehaviour
     {
         if (SteamManager.Instance.isHost)
         {
+            Debug.Log("Opening lobby to public.");
+
             hostedLobby.SetPublic();
             hostedLobby.SetJoinable(true);
         }
@@ -238,6 +241,8 @@ public class LobbyManager : MonoBehaviour
     {
         if (SteamManager.Instance.isHost)
         {
+            Debug.Log("Closing lobby from public.");
+
             hostedLobby.SetPrivate();
             hostedLobby.SetJoinable(false);
         }

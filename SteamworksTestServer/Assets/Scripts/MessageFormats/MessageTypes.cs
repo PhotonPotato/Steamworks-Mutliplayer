@@ -12,6 +12,7 @@ public enum MessageType
 
     ServerTimestampRequest,
     ServerTimestampPackage,
+    GameStartMessage,
     GameStartTimestampRequest,
     GameStartTimestampPackage,
 
@@ -82,6 +83,18 @@ public struct ConsoleChatMessage
     public Message ToMessage()
     {
         return Message.CreateMessage(MessageType.ConsoleChat, JsonUtility.ToJson(this));
+    }
+}
+
+[Serializable]
+public struct GameStartMessage
+{
+    /// <summary>
+    /// Turns this InputPackage into a Message format using json util.
+    /// </summary>
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.GameStartMessage, JsonUtility.ToJson(this));
     }
 }
 

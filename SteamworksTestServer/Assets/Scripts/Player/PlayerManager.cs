@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
+    public ulong attachedSteamId;
+
     [Header("Debug Flags")]
     public bool IS_IN_TEST_SCENE = false;
     public bool SEND_INPUT_SNAPSHOTS_TO_MONITOR = true;

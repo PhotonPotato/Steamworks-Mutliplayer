@@ -67,6 +67,10 @@ public class SteamServerConnectionManager : ConnectionManager
                     LobbyManager.Instance.OnReceiveLobbyInfoPackage(lobbyInfoPackageMessage);
                     break;
 
+                case MessageType.GameStartMessage:
+                    BetweenGamesManager.Instance.OnGameStarted();
+                    break;
+
                 case MessageType.ServerTimestampPackage:
                     // Fwd it to the time keeper if there is one
                     TimeKeeper.Instance?.OnReceiveServerTimestamp(JsonUtility.FromJson<ServerTimestampPackageMessage>(msg.body));

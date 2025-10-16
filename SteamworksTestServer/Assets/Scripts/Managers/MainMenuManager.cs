@@ -44,7 +44,7 @@ public class MainMenuManager : MonoBehaviour
     /// </summary>
     public async void RefreshLobbiesPressedAsync()
     {
-        if (await LobbyManager.Instance.GetRefreshedMultiplayerLobbyList() != null)
+        if ((activeLobbies = await LobbyManager.Instance.GetRefreshedMultiplayerLobbyList()) != null)
         {
             Console.Log($"Refreshing Lobby Listings. Active Lobby Listings: {activeLobbies.Count}");
 
