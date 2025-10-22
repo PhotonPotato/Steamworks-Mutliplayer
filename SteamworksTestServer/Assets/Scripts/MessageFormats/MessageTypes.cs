@@ -19,6 +19,7 @@ public enum MessageType
     InputSnapshot,
     InputSnapshotBundle,
     PlayerPhysicsState,
+    PlayerPhysicsStateBundle,
     entityWorldData
 }
 
@@ -220,5 +221,17 @@ public struct PlayerPhysicsStateMessage
     {
         return (other.position - position).magnitude +
                (other.velocity - velocity).magnitude;
+    }
+}
+
+[Serializable]
+public struct PlayerPhysicsStateBundle
+{
+    public ulong[] ids;
+    public PlayerPhysicsStateMessage[] states;
+
+    public Message ToMessage()
+    {
+        return Message.CreateMessage(MessageType.PlayerPhysicsStateBundle, JsonUtility.ToJson(this));
     }
 }

@@ -21,11 +21,16 @@ public class ServerWorldManager : MonoBehaviour
     public Transform PlayersParent;
     public GameObject PlayerPrefab;
 
+    public Transform[] PlayerSpawnPoints;
+
     [Header("Trackers")]
     public PhysicsScene curPhysScene;
     private SteamSocketServer socketServer;
     public List<PlayerManager> playerManagers = new List<PlayerManager>();
     public Dictionary<ulong, int> steamIdToIndex = new Dictionary<ulong, int>();
+
+    private PlayerPhysicsStateBundle allPlayerStates = new PlayerPhysicsStateBundle();
+
 
     // Running the server 30 ticks behind
     public uint gameTick { get; private set; } = (TimeKeeper.Instance?.gameTick ?? ServerTickDelay) - ServerTickDelay;
@@ -50,6 +55,9 @@ public class ServerWorldManager : MonoBehaviour
         ServerInputManager.Instance.CreatePlayerBuffers(socketServer.playerCount);
 
         SpawnInPlayerZombies();
+
+        allPlayerStates.ids = new ulong[playerManagers.Count];
+        allPlayerStates.states = new PlayerPhysicsStateMessage[playerManagers.Count];
     }
 
     public void RunServerPrePhysicsTick()
@@ -74,7 +82,11 @@ public class ServerWorldManager : MonoBehaviour
 
     public void RunServerPostPhysicsTick()
     {
+        // Send clients player state
         SendBackPlayerPhysicsStates();
+
+        // Send dummy states 
+        SendBackAllPlayerPhysicsStates();
     }
 
     /// <summary>
@@ -86,9 +98,8 @@ public class ServerWorldManager : MonoBehaviour
 
         for (int i = 0; i < socketServer.playerCount; i++)
         {
-            playerManagers.Add(Instantiate(PlayerPrefab, PlayersParent).GetComponent<PlayerManager>());
-
-            // Immediately turn off the players' cameras
+            playerManagers.Add(Instantiate(PlayerPrefab, PlayerSpawnPoints[i].position, PlayerSpawnPoints[i].rotation).GetComponent<PlayerManager>());
+            playerManagers[i].transform.SetParent(PlayersParent);
 
             playerManagers[i].GetComponent<PlayerInput>().enabled = false;
 
@@ -114,14 +125,30 @@ public class ServerWorldManager : MonoBehaviour
             Debug.Log(connectionId);
             int index = steamIdToIndex[connectionId];
 
-            socketServer.SendPlayerPhysicsState(connectionId, new()
+            // Update our current cache of player states
+            allPlayerStates.ids[index] = connectionId;
+            allPlayerStates.states[index] = new()
             {
                 gameTick = gameTick,
 
                 position = playerManagers[index].transform.position,
                 velocity = playerManagers[index].CharacterController.CharacterVelocity,
                 look = playerManagers[index].transform.rotation
-            });
+            };
+
+            socketServer.SendPlayerPhysicsState(connectionId, allPlayerStates.states[index]);
+        }
+    }
+
+    // TODo: THIS IS REDUNDANT, IT SENDS THE CLIENT PLAYERS STATE THEN SEND ALL AT ONCE
+    //       fix for performance
+    //       COULD ALSO cache states from the prevosu function and then have this pull
+    //       recent tick states to send back the everyone... [did it btw, was easier]
+    public void SendBackAllPlayerPhysicsStates()
+    {
+        foreach (Connection connection in socketServer.Connected)
+        {
+            socketServer.SendPlayerPhysicsStateBundle(connection, allPlayerStates);
         }
     }
 }

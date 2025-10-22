@@ -85,6 +85,12 @@ public class SteamServerConnectionManager : ConnectionManager
                     // Send it to the client correction manager
                     ClientCorrectionManager.Instance?.OnReceivedNewPlayerStateFromServer(JsonUtility.FromJson<PlayerPhysicsStateMessage>(msg.body));
                     break;
+
+                case MessageType.PlayerPhysicsStateBundle:
+
+                    // Send it to the other players manager to update player positions
+                    OtherPlayersManager.Instance?.OnNewPlayerState(JsonUtility.FromJson<PlayerPhysicsStateBundle>(msg.body));
+                    break;
             }
         }
         catch (Exception e)

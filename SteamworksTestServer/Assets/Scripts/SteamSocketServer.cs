@@ -291,6 +291,17 @@ public class SteamSocketServer : SocketManager
         SendMessageToClient(connectionList[playerId], state.ToMessage(), SendType.Unreliable);
     }
 
+    // Lightly backed, please put comments and summaries when sober
+    public void SendPlayerPhysicsStateBundle(ulong playerID, PlayerPhysicsStateBundle bundle)
+    {
+        SendMessageToClient(connectionList[playerID], bundle.ToMessage(), SendType.Unreliable);
+    }
+
+    public void SendPlayerPhysicsStateBundle(Connection connection, PlayerPhysicsStateBundle bundle)
+    {
+        SendMessageToClient(connection, bundle.ToMessage(), SendType.Unreliable);
+    }
+
     /// <summary>
     /// Returns an array of connected user steamIds
     /// </summary>

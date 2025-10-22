@@ -312,6 +312,7 @@
 "Assets/Scripts/Managers/GameManager.cs"
 "Assets/Scripts/Managers/LobbyManager.cs"
 "Assets/Scripts/Managers/MainMenuManager.cs"
+"Assets/Scripts/Managers/OtherPlayersManager.cs"
 "Assets/Scripts/Managers/PlayerSpawnManager.cs"
 "Assets/Scripts/Managers/ServerInputManager.cs"
 "Assets/Scripts/Managers/ServerWorldManager.cs"

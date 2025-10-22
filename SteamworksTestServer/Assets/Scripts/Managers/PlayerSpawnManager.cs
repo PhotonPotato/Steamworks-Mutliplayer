@@ -17,13 +17,16 @@ public class PlayerSpawnManager : MonoBehaviour
         else DestroyImmediate(gameObject);
     }
 
-    public GameObject[] SpawnAllPlayers(int count, PhysicsScene physicsScene, out GameObject SpawnedDummy)
+    public GameObject[] SpawnAllPlayers(int count, PhysicsScene physicsScene, ulong[] ids, out GameObject SpawnedDummy)
     {
         GameObject[] players = new GameObject[count];
 
         for (int i = 0; i < count; i++)
         {
             players[i] = Instantiate(PlayerPrefab);
+
+            // Update the attached steam id to the player (no matter if host or not)
+            players[i].GetComponent<PlayerManager>().attachedSteamId = ids[i];
 
             // Turn off all client components, effectively making it a zombie
             if (i != 0)

@@ -166,5 +166,6 @@ public class GameFlowManager : MonoBehaviour
 
         // UPDATE
         SteamManager.Instance?.PostPhysUpdate();
+        OtherPlayersManager.Instance?.PostPhysicsUpdate();
     }
 }

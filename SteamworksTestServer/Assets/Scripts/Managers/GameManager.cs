@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +15,9 @@ public class GameManager : MonoBehaviour
     public GameObject[] playerObjects { get; private set; }
     public GameObject dummyPlayer;
 
+    public ulong steamId { get; private set; }
+    public Dictionary<ulong, int> steamIdToIndex { get; private set; } = new Dictionary<ulong, int>();
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -22,8 +26,23 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        // Get the list of connected steamIds and swap this steam id to the 0th index
+        steamId = SteamManager.Instance.myPlayerInfo.steamId;
+        for (int i = 0, j = 1; i < LobbyManager.Instance.playersInLobby.Length; i++)
+        {
+            if (LobbyManager.Instance.playersInLobby[i].steamId == steamId)
+            {
+                steamIdToIndex.Add(steamId, 0);
+            }
+            else
+            {
+                steamIdToIndex.Add(LobbyManager.Instance.playersInLobby[i].steamId, j);
+                j++;
+            }
+        }
+
         Log("Spawning players and dummy.");
-        playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length, currentGameScene, out dummyPlayer);
+        playerObjects = PlayerSpawnManager.Instance.SpawnAllPlayers(LobbyManager.Instance.playersInLobby.Length, currentGameScene, steamIdToIndex.Keys.ToArray(), out dummyPlayer);
 
         // Try to get player manager
         thisPlayerManager = playerObjects[0].GetComponent<PlayerManager>();
