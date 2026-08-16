@@ -1,4 +1,4 @@
-# Steamworks Peer-to-Peer Testing
+# Steamworks-Multiplayer
 Host and join multiplayer lobbies through Steam using FacePunch's [C# Steamworks Wrapper](https://wiki.facepunch.com/steamworks/).
 Clean first-person player movement.
 Runs a dedicated server and client concurrently off of the lobby host.
